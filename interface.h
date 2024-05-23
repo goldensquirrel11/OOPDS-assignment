@@ -48,6 +48,43 @@ public:
     void refresh();
 };
 
+inline string Board::getBoard()
+{
+    return boardBuffer;
+}
+
+inline void Board::setWidth(int width)
+{
+    this->width = width;
+}
+
+inline void Board::setHeight(int height)
+{
+    this->height = height;
+}
+
+// TODO: Rewrite this function once a working Robot Deque is available
+inline void Board::refresh(/* pass in robot Queue */)
+{
+    boardBuffer += CORNER;
+    boardBuffer += repeatChar(HORIZONTAL_BAR, width);
+    boardBuffer += CORNER;
+    boardBuffer += '\n';
+
+    for (int i = height; i > 0; i--)
+    {
+        boardBuffer += VERTICAL_BAR;
+        boardBuffer += repeatChar(EMPTY_SPACE, width);
+        boardBuffer += VERTICAL_BAR;
+        boardBuffer += '\n';
+    }
+
+    boardBuffer += CORNER;
+    boardBuffer += repeatChar(HORIZONTAL_BAR, width);
+    boardBuffer += CORNER;
+    boardBuffer += '\n';
+}
+
 class Game
 {
 private:
