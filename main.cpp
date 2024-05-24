@@ -23,7 +23,5 @@ int main()
 
     Game game(configFile);
 
-    configFile.close();
-
     return 0;
 }

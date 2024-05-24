@@ -6,17 +6,21 @@
 #include <string>
 using namespace std;
 
-
 class Robot
 {
 private:
+    string name;
     int lives = 3;
     int killToNextEvolve = 3;
     int posX = 0;
     int posY = 0;
     string statusLog = "";
-public:
 
+public:
+    // TODO: Robot constructor
+    // - set name
+
+    string getName();
     int getPositionX();
     int getPositionY();
     void updatePositionX(int newPosX);
@@ -27,58 +31,58 @@ public:
     bool isAlive();
 };
 
-class SteppingRobot
+class TramplingRobot : public Robot
 {
 private:
     /* data */
 public:
-    SteppingRobot(/* args */);
-    ~SteppingRobot();
+    TramplingRobot(/* args */);
+    ~TramplingRobot();
 };
 
-SteppingRobot::SteppingRobot(/* args */)
+TramplingRobot::TramplingRobot(/* args */)
 {
 }
 
-SteppingRobot::~SteppingRobot()
+TramplingRobot::~TramplingRobot()
 {
 }
 
-class SeeingRobot
+class LookingRobot : public Robot
 {
 private:
     /* data */
 public:
-    SeeingRobot(/* args */);
-    ~SeeingRobot();
+    LookingRobot(/* args */);
+    ~LookingRobot();
 };
 
-SeeingRobot::SeeingRobot(/* args */)
+LookingRobot::LookingRobot(/* args */)
 {
 }
 
-SeeingRobot::~SeeingRobot()
+LookingRobot::~LookingRobot()
 {
 }
 
-class ShootingRobot
+class FiringRobot : public Robot
 {
 private:
     /* data */
 public:
-    ShootingRobot(/* args */);
-    ~ShootingRobot();
+    FiringRobot(/* args */);
+    ~FiringRobot();
 };
 
-ShootingRobot::ShootingRobot(/* args */)
+FiringRobot::FiringRobot(/* args */)
 {
 }
 
-ShootingRobot::~ShootingRobot()
+FiringRobot::~FiringRobot()
 {
 }
 
-class MovingRobot
+class MovingRobot : public Robot
 {
 private:
     /* data */
@@ -92,6 +96,125 @@ MovingRobot::MovingRobot(/* args */)
 }
 
 MovingRobot::~MovingRobot()
+{
+}
+
+class RoboCop : public LookingRobot, public MovingRobot, public FiringRobot
+{
+private:
+    /* data */
+public:
+    RoboCop(/* args */);
+    ~RoboCop();
+};
+
+RoboCop::RoboCop(/* args */)
+{
+}
+
+RoboCop::~RoboCop()
+{
+}
+
+class Terminator : public LookingRobot, public MovingRobot, public TramplingRobot
+{
+private:
+    /* data */
+public:
+    Terminator(/* args */);
+    ~Terminator();
+};
+
+Terminator::Terminator(/* args */)
+{
+}
+
+Terminator::~Terminator()
+{
+}
+
+class TerminatorRoboCop : public LookingRobot, public MovingRobot, public TramplingRobot, public FiringRobot
+{
+private:
+    /* data */
+public:
+    TerminatorRoboCop(/* args */);
+    ~TerminatorRoboCop();
+};
+
+TerminatorRoboCop::TerminatorRoboCop(/* args */)
+{
+}
+
+TerminatorRoboCop::~TerminatorRoboCop()
+{
+}
+
+class UltimateRobot : public LookingRobot, public MovingRobot, public TramplingRobot, public FiringRobot
+{
+private:
+    /* data */
+public:
+    UltimateRobot(/* args */);
+    ~UltimateRobot();
+};
+
+UltimateRobot::UltimateRobot(/* args */)
+{
+}
+
+UltimateRobot::~UltimateRobot()
+{
+}
+
+class BlueThunder : public FiringRobot
+{
+private:
+    /* data */
+public:
+    BlueThunder(/* args */);
+    ~BlueThunder();
+};
+
+BlueThunder::BlueThunder(/* args */)
+{
+}
+
+BlueThunder::~BlueThunder()
+{
+}
+
+class Madbot : public FiringRobot
+{
+private:
+    /* data */
+public:
+    Madbot(/* args */);
+    ~Madbot();
+};
+
+Madbot::Madbot(/* args */)
+{
+}
+
+Madbot::~Madbot()
+{
+}
+
+class RoboTank : public FiringRobot
+{
+private:
+    /* data */
+public:
+    RoboTank(/* args */);
+    ~RoboTank();
+};
+
+RoboTank::RoboTank(/* args */)
+{
+}
+
+RoboTank::~RoboTank()
 {
 }
 
