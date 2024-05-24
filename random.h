@@ -7,45 +7,48 @@ using namespace std;
 class RNG
 {
 private:
-    int boardWidth;
-    int boardHeight;
-    random_device randomGenerator;
+    static int boardWidth;
+    static int boardHeight;
+    static random_device randomGenerator;
+
 public:
-    void init(int boardWidth, int boardHeight);
+    static void init(int boardWidth, int boardHeight);
 
-    int posX();
-    int posY();
+    static int posX();
+    static int posY();
 
-    int integer(int min, int max);
+    static int integer(int min, int max);
 };
 
-inline void RNG::init(int boardWidth, int boardHeight)
+int RNG::boardWidth = 0;
+int RNG::boardHeight = 0;
+random_device RNG::randomGenerator;
+
+void RNG::init(int width, int height)
 {
-    this->boardWidth = boardWidth;
-    this->boardHeight = boardHeight;
+    RNG::boardWidth = width;
+    RNG::boardHeight = height;
 }
 
-inline int RNG::posX()
+int RNG::posX()
 {
     uniform_int_distribution<int> randomX(0, boardWidth - 1);
 
     return randomX(randomGenerator);
 }
 
-inline int RNG::posY()
+int RNG::posY()
 {
     uniform_int_distribution<int> randomX(0, boardHeight - 1);
 
     return randomX(randomGenerator);
 }
 
-inline int RNG::integer(int min, int max)
+int RNG::integer(int min, int max)
 {
     uniform_int_distribution<int> randomX(min, max);
 
     return randomX(randomGenerator);
 }
-
-RNG rng;
 
 #endif
