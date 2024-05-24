@@ -36,6 +36,9 @@ public:
     bool is_empty();
     T front();
     T back();
+    // TODO: copy constructor
+    // TODO: move constructor
+    // TODO: [] operator overloading
 
     // Modifiers
     void push_back(T data);
@@ -226,7 +229,7 @@ inline T Deque<T>::pop_front()
 template <typename T>
 inline void Deque<T>::clear()
 {
-    while (head == nullptr)
+    while (head != nullptr)
     {
         pop_back();
     }
