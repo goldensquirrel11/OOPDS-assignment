@@ -107,7 +107,8 @@ private:
     Board board;
     int turnLimit = 0;
     string displayBuffer = "";
-    Deque<Robot> robotDeque;
+    static Deque<Robot*> robotDeque;
+    static Deque<Robot*> reviveDeque;
     ofstream logFile;
 
     void readConfigFile(ifstream &configFile);
@@ -123,9 +124,11 @@ public:
     void updateInterface();
 };
 
+Deque<Robot *> Game::robotDeque;
+Deque<Robot *> Game::reviveDeque;
+
 inline void Game::readConfigFile(ifstream &configFile)
 {
-    // TODO: Read in values from config file and call appropriate initializers
     string input;
 
     // Read in board width & height
