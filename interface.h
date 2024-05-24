@@ -66,6 +66,8 @@ inline void Board::setHeight(int height)
 // TODO: Rewrite this function once a working Robot Deque is available
 inline void Board::refresh(/* pass in robot Queue */)
 {
+    boardBuffer = "";
+
     boardBuffer += CORNER;
     boardBuffer += repeatChar(HORIZONTAL_BAR, width);
     boardBuffer += CORNER;
