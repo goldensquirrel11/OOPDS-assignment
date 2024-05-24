@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 
+#include "random.h"
 #include "deque.h"
 #include "robot.h"
 
@@ -40,6 +41,8 @@ private:
 
 public:
     // Accessors
+    int getWidth();
+    int getHeight();
     string getBoard();
 
     // Modifiers
@@ -47,6 +50,16 @@ public:
     void setHeight(int height);
     void refresh();
 };
+
+inline int Board::getWidth()
+{
+    return this->width;
+}
+
+inline int Board::getHeight()
+{
+    return this->height;
+}
 
 inline string Board::getBoard()
 {
@@ -95,11 +108,19 @@ private:
     int turnLimit = 0;
     string displayBuffer = "";
     Deque<Robot> robotDeque;
+    ofstream logFile;
 
     void readConfigFile(ifstream &configFile);
 
+    // Exception Classes
+    class LogFileOpeningError
+    {
+    };
+
 public:
     Game(ifstream &configFile);
+
+    void updateInterface();
 };
 
 inline void Game::readConfigFile(ifstream &configFile)
@@ -175,6 +196,102 @@ inline void Game::readConfigFile(ifstream &configFile)
             // TODO: Throw error for undefined robot type
         }
     }
+}
+
+inline Game::Game(ifstream &configFile)
+{
+    readConfigFile(configFile);
+
+    // Open in default mode to clear log file
+    logFile.open("game.log");
+
+    if (!logFile.is_open())
+    {
+        throw LogFileOpeningError();
+    }
+    
+    logFile.close();
+    
+    // Open log file in append mode
+    logFile.open("game.log", ofstream::app);
+
+    if (!logFile.is_open())
+    {
+        throw LogFileOpeningError();
+    }
+
+    updateInterface();
+}
+
+inline void Game::updateInterface()
+{
+    displayBuffer = "";
+
+    board.refresh();
+
+    ifstream interfaceTemplate;
+    interfaceTemplate.open("interface.template");
+
+    string input;
+
+    getline(interfaceTemplate, input, '\'');
+    displayBuffer += input;
+
+    displayBuffer += to_string(turn);
+
+    getline(interfaceTemplate, input, '\'');
+    displayBuffer += input;
+
+    displayBuffer += to_string(robotDeque.size());
+
+    getline(interfaceTemplate, input, '\'');
+    displayBuffer += input;
+
+    // TODO: Get current robot's name
+
+    getline(interfaceTemplate, input, '\'');
+    displayBuffer += input;
+
+    // TODO: Get current robot's type
+
+    getline(interfaceTemplate, input, '\'');
+    displayBuffer += input;
+
+    // TODO: Get current robot's kills to next evolution
+
+    getline(interfaceTemplate, input, '\'');
+    displayBuffer += input;
+
+    // TODO: Get current robot's looking range
+
+    getline(interfaceTemplate, input, '\'');
+    displayBuffer += input;
+
+    // TODO: Get current robot's moving range
+
+    getline(interfaceTemplate, input, '\'');
+    displayBuffer += input;
+
+    // TODO: Get current robot's can trample?
+
+    getline(interfaceTemplate, input, '\'');
+    displayBuffer += input;
+
+    // TODO: Get current robot's firing range
+
+    getline(interfaceTemplate, input, '\'');
+    displayBuffer += input;
+
+    // TODO: Get current robot's status log
+
+    getline(interfaceTemplate, input, '\'');
+    displayBuffer += input;
+
+    displayBuffer += board.getBoard() + '\n';
+
+    cout << displayBuffer;
+
+    logFile << displayBuffer;
 }
 
 #endif
