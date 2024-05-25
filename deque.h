@@ -28,17 +28,17 @@ private:
     };
 
 public:
-
+    Deque();
     ~Deque();
+    Deque(const Deque &object);
+    Deque(Deque &&object);
 
     // Accessors
     int size();
     bool is_empty();
     T front();
     T back();
-    // TODO: copy constructor
-    // TODO: move constructor
-    // TODO: [] operator overloading
+    T& operator[](int i);
 
     // Modifiers
     void push_back(T data);
@@ -46,7 +46,15 @@ public:
     T pop_back();
     T pop_front();
     void clear();
+    T& operator=(T &rval);
+    T& operator=(T &&rval);
+    void erase(int i);
 };
+
+template <typename T>
+inline Deque<T>::Deque()
+{
+}
 
 template <typename T>
 inline Deque<T>::~Deque()
@@ -57,6 +65,33 @@ inline Deque<T>::~Deque()
     delete tail;
     head = nullptr;
     tail = nullptr;
+}
+
+/// @brief Copy constructor
+/// @param object object to copy
+template <typename T>
+inline Deque<T>::Deque(const Deque &object)
+{
+    if (object.size() == 0)
+    {
+        return;
+    }
+    
+    for (int i = 0; i<object.size(); i++) {
+        this->push_back(object[i]);
+    }
+}
+
+/// @brief Move constructor
+/// @param object object to steal
+template <typename T>
+inline Deque<T>::Deque(Deque &&object)
+{
+    head = object.head;
+    tail = object.tail;
+
+    object.head = nullptr;
+    object.tail = nullptr;
 }
 
 template <typename T>
@@ -112,6 +147,30 @@ inline T Deque<T>::back()
     }
 }
 
+/// @brief 
+/// @tparam T datatype
+/// @param i index
+/// @return reference to object at index i
+/// @exception OutOfBounds returned when referencing an invalid index
+template <typename T>
+inline T& Deque<T>::operator[](int i)
+{
+    if (i >= this->size())
+    {
+        throw OutOfBounds();
+    }
+
+    node *cursor = this->head;
+    for (; i > 0; i--)
+    {
+        cursor = cursor->next;
+    }
+
+    return cursor->data;
+}
+
+/// @brief Add element at the end of the deque
+/// @param data value to be copied or moved to the new element
 template <typename T>
 inline void Deque<T>::push_back(T data)
 {
@@ -129,11 +188,8 @@ inline void Deque<T>::push_back(T data)
 
         tail->next = new_node;
         new_node->prev = tail;
-        
-        tail = new_node;
 
-        delete new_node;
-        new_node = nullptr;
+        tail = new_node;
     }
 }
 
@@ -156,8 +212,6 @@ inline void Deque<T>::push_front(T data)
         new_node->next = head;
 
         head = new_node;
-        delete new_node;
-        new_node = nullptr;
     }
 }
 
@@ -232,6 +286,68 @@ inline void Deque<T>::clear()
     while (head != nullptr)
     {
         pop_back();
+    }
+}
+
+/// @brief Copy assignment operator
+/// @param rval 
+/// @return 
+template <typename T>
+inline T &Deque<T>::operator=(T &rval)
+{
+    if (this != &rval) {
+        swap(head, rval.head);
+        swap(tail, rval.tail);
+    }
+
+    return *this;
+}
+
+/// @brief Move assignment operator
+/// @param rval 
+/// @return 
+template <typename T>
+inline T &Deque<T>::operator=(T &&rval)
+{
+    if (this != &rval)
+    {
+        node *cursor = rval.head;
+        while (cursor != nullptr) {
+            push_back(cursor->data);
+            cursor = cursor->next;
+        }
+    }
+
+    return *this;
+}
+
+/// @brief Erases an element
+/// @param i index of element to erase
+/// @exception OutOfBounds returned when referencing an invalid index
+template <typename T>
+inline void Deque<T>::erase(int i)
+{
+    if (i >= size())
+        throw OutOfBounds();
+
+    if (head == nullptr) {
+        return;
+    }
+
+    node *currentNode = head;
+    for (; i>0; i--) {
+        currentNode = currentNode->next;
+    }
+
+    node *nextNode = currentNode->next;
+    node *prevNode = currentNode->prev;
+
+    if (prevNode != nullptr) {
+        prevNode->next = nextNode;
+    }
+
+    if (nextNode != nullptr) {
+        nextNode->prev = prevNode;
     }
 }
 
