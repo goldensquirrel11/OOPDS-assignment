@@ -46,6 +46,7 @@ public:
     T pop_back();
     T pop_front();
     void clear();
+    T& operator=(T &rval);
 };
 
 template <typename T>
@@ -284,6 +285,20 @@ inline void Deque<T>::clear()
     {
         pop_back();
     }
+}
+
+/// @brief Copy assignment operator
+/// @param rval 
+/// @return 
+template <typename T>
+inline T &Deque<T>::operator=(T &rval)
+{
+    if (this != &rval) {
+        swap(head, rval.head);
+        swap(tail, rval.tail);
+    }
+
+    return *this;
 }
 
 #endif
