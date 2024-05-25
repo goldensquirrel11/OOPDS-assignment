@@ -48,6 +48,7 @@ public:
     void clear();
     T& operator=(T &rval);
     T& operator=(T &&rval);
+    void erase(int i);
 };
 
 template <typename T>
@@ -318,6 +319,36 @@ inline T &Deque<T>::operator=(T &&rval)
     }
 
     return *this;
+}
+
+/// @brief Erases an element
+/// @param i index of element to erase
+/// @exception OutOfBounds returned when referencing an invalid index
+template <typename T>
+inline void Deque<T>::erase(int i)
+{
+    if (i >= size())
+        throw OutOfBounds();
+
+    if (head == nullptr) {
+        return;
+    }
+
+    node *currentNode = head;
+    for (; i>0; i--) {
+        currentNode = currentNode->next;
+    }
+
+    node *nextNode = currentNode->next;
+    node *prevNode = currentNode->prev;
+
+    if (prevNode != nullptr) {
+        prevNode->next = nextNode;
+    }
+
+    if (nextNode != nullptr) {
+        nextNode->prev = prevNode;
+    }
 }
 
 #endif
