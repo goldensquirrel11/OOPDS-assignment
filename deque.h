@@ -30,6 +30,7 @@ private:
 public:
     Deque();
     ~Deque();
+    Deque(const Deque &object);
 
     // Accessors
     int size();
@@ -60,6 +61,21 @@ inline Deque<T>::~Deque()
     delete tail;
     head = nullptr;
     tail = nullptr;
+}
+
+/// @brief Copy constructor
+/// @param object object to copy
+template <typename T>
+inline Deque<T>::Deque(const Deque &object)
+{
+    if (object.size() == 0)
+    {
+        return;
+    }
+    
+    for (int i = 0; i<object.size(); i++) {
+        this->push_back(object[i]);
+    }
 }
 
 template <typename T>
