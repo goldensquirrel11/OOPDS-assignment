@@ -36,9 +36,7 @@ public:
     bool is_empty();
     T front();
     T back();
-    // TODO: copy constructor
-    // TODO: move constructor
-    // TODO: [] operator overloading
+    T& operator[](int i);
 
     // Modifiers
     void push_back(T data);
@@ -112,6 +110,30 @@ inline T Deque<T>::back()
     }
 }
 
+/// @brief 
+/// @tparam T datatype
+/// @param i index
+/// @return reference to object at index i
+/// @exception OutOfBounds returned when referencing an invalid index
+template <typename T>
+inline T& Deque<T>::operator[](int i)
+{
+    if (i >= this->size())
+    {
+        throw OutOfBounds();
+    }
+
+    node *cursor = this->head;
+    for (; i > 0; i--)
+    {
+        cursor = cursor->next;
+    }
+
+    return cursor->data;
+}
+
+/// @brief Add element at the end of the deque
+/// @param data value to be copied or moved to the new element
 template <typename T>
 inline void Deque<T>::push_back(T data)
 {
