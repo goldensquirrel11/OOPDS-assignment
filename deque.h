@@ -129,11 +129,8 @@ inline void Deque<T>::push_back(T data)
 
         tail->next = new_node;
         new_node->prev = tail;
-        
-        tail = new_node;
 
-        delete new_node;
-        new_node = nullptr;
+        tail = new_node;
     }
 }
 
@@ -156,8 +153,6 @@ inline void Deque<T>::push_front(T data)
         new_node->next = head;
 
         head = new_node;
-        delete new_node;
-        new_node = nullptr;
     }
 }
 
