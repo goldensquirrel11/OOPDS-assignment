@@ -28,8 +28,10 @@ private:
     };
 
 public:
-
+    Deque();
     ~Deque();
+    Deque(const Deque &object);
+    Deque(Deque &&object);
 
     // Accessors
     int size();
@@ -44,7 +46,15 @@ public:
     T pop_back();
     T pop_front();
     void clear();
+    T& operator=(T &rval);
+    T& operator=(T &&rval);
+    void erase(int i);
 };
+
+template <typename T>
+inline Deque<T>::Deque()
+{
+}
 
 template <typename T>
 inline Deque<T>::~Deque()
@@ -55,6 +65,33 @@ inline Deque<T>::~Deque()
     delete tail;
     head = nullptr;
     tail = nullptr;
+}
+
+/// @brief Copy constructor
+/// @param object object to copy
+template <typename T>
+inline Deque<T>::Deque(const Deque &object)
+{
+    if (object.size() == 0)
+    {
+        return;
+    }
+    
+    for (int i = 0; i<object.size(); i++) {
+        this->push_back(object[i]);
+    }
+}
+
+/// @brief Move constructor
+/// @param object object to steal
+template <typename T>
+inline Deque<T>::Deque(Deque &&object)
+{
+    head = object.head;
+    tail = object.tail;
+
+    object.head = nullptr;
+    object.tail = nullptr;
 }
 
 template <typename T>
@@ -249,6 +286,68 @@ inline void Deque<T>::clear()
     while (head != nullptr)
     {
         pop_back();
+    }
+}
+
+/// @brief Copy assignment operator
+/// @param rval 
+/// @return 
+template <typename T>
+inline T &Deque<T>::operator=(T &rval)
+{
+    if (this != &rval) {
+        swap(head, rval.head);
+        swap(tail, rval.tail);
+    }
+
+    return *this;
+}
+
+/// @brief Move assignment operator
+/// @param rval 
+/// @return 
+template <typename T>
+inline T &Deque<T>::operator=(T &&rval)
+{
+    if (this != &rval)
+    {
+        node *cursor = rval.head;
+        while (cursor != nullptr) {
+            push_back(cursor->data);
+            cursor = cursor->next;
+        }
+    }
+
+    return *this;
+}
+
+/// @brief Erases an element
+/// @param i index of element to erase
+/// @exception OutOfBounds returned when referencing an invalid index
+template <typename T>
+inline void Deque<T>::erase(int i)
+{
+    if (i >= size())
+        throw OutOfBounds();
+
+    if (head == nullptr) {
+        return;
+    }
+
+    node *currentNode = head;
+    for (; i>0; i--) {
+        currentNode = currentNode->next;
+    }
+
+    node *nextNode = currentNode->next;
+    node *prevNode = currentNode->prev;
+
+    if (prevNode != nullptr) {
+        prevNode->next = nextNode;
+    }
+
+    if (nextNode != nullptr) {
+        nextNode->prev = prevNode;
     }
 }
 
