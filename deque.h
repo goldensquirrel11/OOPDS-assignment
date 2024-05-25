@@ -28,7 +28,7 @@ private:
     };
 
 public:
-
+    Deque();
     ~Deque();
 
     // Accessors
@@ -45,6 +45,11 @@ public:
     T pop_front();
     void clear();
 };
+
+template <typename T>
+inline Deque<T>::Deque()
+{
+}
 
 template <typename T>
 inline Deque<T>::~Deque()
