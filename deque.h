@@ -47,6 +47,7 @@ public:
     T pop_front();
     void clear();
     T& operator=(T &rval);
+    T& operator=(T &&rval);
 };
 
 template <typename T>
@@ -296,6 +297,24 @@ inline T &Deque<T>::operator=(T &rval)
     if (this != &rval) {
         swap(head, rval.head);
         swap(tail, rval.tail);
+    }
+
+    return *this;
+}
+
+/// @brief Move assignment operator
+/// @param rval 
+/// @return 
+template <typename T>
+inline T &Deque<T>::operator=(T &&rval)
+{
+    if (this != &rval)
+    {
+        node *cursor = rval.head;
+        while (cursor != nullptr) {
+            push_back(cursor->data);
+            cursor = cursor->next;
+        }
     }
 
     return *this;
