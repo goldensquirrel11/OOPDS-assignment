@@ -31,6 +31,7 @@ public:
     Deque();
     ~Deque();
     Deque(const Deque &object);
+    Deque(Deque &&object);
 
     // Accessors
     int size();
@@ -76,6 +77,18 @@ inline Deque<T>::Deque(const Deque &object)
     for (int i = 0; i<object.size(); i++) {
         this->push_back(object[i]);
     }
+}
+
+/// @brief Move constructor
+/// @param object object to steal
+template <typename T>
+inline Deque<T>::Deque(Deque &&object)
+{
+    head = object.head;
+    tail = object.tail;
+
+    object.head = nullptr;
+    object.tail = nullptr;
 }
 
 template <typename T>
