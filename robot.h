@@ -1,9 +1,10 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#include "random.h"
-
 #include <string>
+
+#include "deque.h"
+
 using namespace std;
 
 class Robot
@@ -23,8 +24,8 @@ private:
     class AddingNegativeKills {};
 
 public:
-
-    // TODO: Robot constructor
+    static Deque<Robot*> robotDeque;
+    static Deque<Robot*> reviveDeque;
     // - set name
     // - set position
 
@@ -43,6 +44,8 @@ public:
     void minusOneLife();
     void addKill(int killsToAdd);
 };
+Deque<Robot *> Robot::robotDeque;
+Deque<Robot *> Robot::reviveDeque;
 
 inline string Robot::getName() const
 {

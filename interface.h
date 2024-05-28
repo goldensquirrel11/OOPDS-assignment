@@ -6,7 +6,6 @@
 #include <string>
 
 #include "random.h"
-#include "deque.h"
 #include "robot.h"
 
 using namespace std;
@@ -107,8 +106,6 @@ private:
     Board board;
     int turnLimit = 0;
     string displayBuffer = "";
-    static Deque<Robot*> robotDeque;
-    static Deque<Robot*> reviveDeque;
     ofstream logFile;
 
     void readConfigFile(ifstream &configFile);
@@ -123,9 +120,6 @@ public:
 
     void updateInterface();
 };
-
-Deque<Robot *> Game::robotDeque;
-Deque<Robot *> Game::reviveDeque;
 
 inline void Game::readConfigFile(ifstream &configFile)
 {
@@ -245,7 +239,7 @@ inline void Game::updateInterface()
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
 
-    displayBuffer += to_string(robotDeque.size());
+    displayBuffer += to_string(Robot::robotDeque.size());
 
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
