@@ -11,25 +11,89 @@ class Robot
 private:
     string name;
     int lives = 3;
-    int killToNextEvolve = 3;
+    int killsToNextEvolve = 3;
     int posX = 0;
     int posY = 0;
     string statusLog = "";
+    
+    // Exception for when lives is decremented past 0
+    class NoLivesLeft {};
+
+    // Exception for adding negative number of kills
+    class AddingNegativeKills {};
 
 public:
+
     // TODO: Robot constructor
     // - set name
+    // - set position
 
-    string getName();
-    int getPositionX();
-    int getPositionY();
+    // Accessors
+
+    string getName() const;
+    int getPositionX() const;
+    int getPositionY() const;
+    int getKillsToNextEvolve() const;
+
+    // Modifiers
+
     void updatePositionX(int newPosX);
     void updatePositionY(int newPosY);
-    void evolve();
-    void die();
+    virtual void evolve() = 0;
+    void minusOneLife();
     void addKill(int killsToAdd);
-    bool isAlive();
 };
+
+inline string Robot::getName() const
+{
+    return this->name;
+}
+
+inline int Robot::getPositionX() const
+{
+    return this->posX;
+}
+
+inline int Robot::getPositionY() const
+{
+    return this->posY;
+}
+
+inline int Robot::getKillsToNextEvolve() const
+{
+    return this->killsToNextEvolve;
+}
+
+inline void Robot::updatePositionX(int newPosX)
+{
+    this->posX = newPosX;
+}
+
+inline void Robot::updatePositionY(int newPosY)
+{
+    this->posY = newPosY;
+}
+
+inline void Robot::minusOneLife()
+{
+    if (this->lives == 0)
+        throw NoLivesLeft();
+    else
+        this->lives--;
+}
+
+inline void Robot::addKill(int killsToAdd)
+{
+    if (killsToAdd < 0)
+        throw AddingNegativeKills();
+
+    killsToNextEvolve -= killsToAdd;
+    
+    if (killsToNextEvolve <= 0) {
+        killsToNextEvolve += 3;
+        evolve();
+    }
+}
 
 class TramplingRobot : public Robot
 {
