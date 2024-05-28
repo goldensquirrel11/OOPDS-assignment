@@ -34,6 +34,7 @@ public:
     Deque(Deque &&object);
 
     // Accessors
+
     int size();
     bool is_empty();
     T front();
@@ -41,6 +42,7 @@ public:
     T& operator[](int i);
 
     // Modifiers
+
     void push_back(T data);
     void push_front(T data);
     T pop_back();
@@ -236,9 +238,12 @@ inline T Deque<T>::pop_back()
         }
         
         delete temp->next;
-        delete temp->prev;
         temp->next = nullptr;
+
         temp->prev = nullptr;
+        delete temp->prev;
+        temp->prev = nullptr;
+        
         delete temp;
         temp = nullptr;
 
@@ -269,9 +274,11 @@ inline T Deque<T>::pop_front()
             head->prev = nullptr;
         }
 
-        delete temp->next;
-        delete temp->prev;
         temp->next = nullptr;
+        delete temp->next;
+        temp->next = nullptr;
+        
+        delete temp->prev;
         temp->prev = nullptr;
         delete temp;
         temp = nullptr;
