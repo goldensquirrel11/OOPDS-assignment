@@ -45,6 +45,7 @@ public:
     int getPositionX() const;
     int getPositionY() const;
     int getKillsToNextEvolve() const;
+    int getLives() const;
 
     // Modifiers
 
@@ -84,6 +85,11 @@ inline int Robot::getPositionY() const
 inline int Robot::getKillsToNextEvolve() const
 {
     return this->killsToNextEvolve;
+}
+
+inline int Robot::getLives() const
+{
+    return this->lives;
 }
 
 inline void Robot::updatePositionX(int newPosX)
