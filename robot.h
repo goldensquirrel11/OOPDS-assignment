@@ -51,11 +51,12 @@ public:
 
     void updatePositionX(int newPosX);
     void updatePositionY(int newPosY);
-    virtual void evolve() = 0;
     void minusOneLife();
     void addKill(int killsToAdd);
 
     virtual void kill(Robot *robotToKill);
+    virtual void executeTurn() = 0;
+    virtual void evolve() = 0;
 };
 
 Deque<Robot *> Robot::robotDeque;
