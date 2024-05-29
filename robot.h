@@ -34,6 +34,8 @@ public:
     {
     };
 
+    static Deque<Robot *> robotDeque;
+    static Deque<Robot *> reviveDeque;
 
     // Accessors
 
