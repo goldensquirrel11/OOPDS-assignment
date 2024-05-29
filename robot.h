@@ -11,6 +11,7 @@ class Robot
 {
 private:
     string name;
+    string type;
     int lives = 3;
     int killsToNextEvolve = 3;
     int posX = 0;
@@ -36,6 +37,8 @@ public:
     static Deque<Robot *> robotDeque;
     static Deque<Robot *> reviveDeque;
 
+    Robot(string name, string type, int posX, int posY);
+
     // Accessors
 
     string getName() const;
@@ -54,6 +57,14 @@ public:
 
 Deque<Robot *> Robot::robotDeque;
 Deque<Robot *> Robot::reviveDeque;
+
+inline Robot::Robot(string name, string type, int posX, int posY)
+{
+    this->name = name;
+    this->type = type;
+    this->posX = posX;
+    this->posY = posY;
+}
 
 inline string Robot::getName() const
 {
