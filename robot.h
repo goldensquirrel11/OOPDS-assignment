@@ -166,18 +166,29 @@ inline void TramplingRobot::trample()
 class LookingRobot : public Robot
 {
 private:
-    /* data */
+    int lookRange = 1;
+
 public:
-    LookingRobot(/* args */);
-    ~LookingRobot();
+    Robot* look(int relativeX, int relativeY);
 };
 
-LookingRobot::LookingRobot(/* args */)
+inline Robot* LookingRobot::look(int relativeX, int relativeY)
 {
-}
+    int positionX = this->getPositionX() + relativeX;
+    int positionY = this->getPositionY() + relativeY;
 
-LookingRobot::~LookingRobot()
-{
+    // Checking if the position that is being referenced is a position inside the game board
+    if (positionX >= Board::getWidth() || positionY >= Board::getHeight() || positionX < 0 || positionY < 0)
+    {
+        throw PositionOutsideOfBoard();
+    }
+
+    for (int i = 0; i < robotDeque.size(); i++)
+    {
+        if (robotDeque[i]->getPositionX() == positionX && robotDeque[i]->getPositionY() == positionY) {
+            return robotDeque[i];
+        }
+    }
 }
 
 class FiringRobot : public Robot
