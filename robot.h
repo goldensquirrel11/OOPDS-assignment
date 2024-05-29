@@ -148,19 +148,19 @@ inline void Robot::kill(Robot *robotToKill)
 
 class TramplingRobot : public Robot
 {
-private:
-    /* data */
 public:
-    TramplingRobot(/* args */);
-    ~TramplingRobot();
+    void trample();
 };
 
-TramplingRobot::TramplingRobot(/* args */)
+inline void TramplingRobot::trample()
 {
-}
-
-TramplingRobot::~TramplingRobot()
-{
+    for (int i = 0; i < Robot::robotDeque.size(); i++)
+    {
+        if (Robot::robotDeque[i]->getPositionX() == this->getPositionX() && Robot::robotDeque[i]->getPositionY() == this->getPositionY() && Robot::robotDeque[i] != this)
+        {
+            this->kill(Robot::robotDeque[i]);
+        }
+    }
 }
 
 class LookingRobot : public Robot
