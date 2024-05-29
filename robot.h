@@ -54,6 +54,8 @@ public:
     virtual void evolve() = 0;
     void minusOneLife();
     void addKill(int killsToAdd);
+
+    virtual void kill(Robot *robotToKill);
 };
 
 Deque<Robot *> Robot::robotDeque;
@@ -121,6 +123,26 @@ inline void Robot::addKill(int killsToAdd)
         killsToNextEvolve += 3;
         evolve();
     }
+}
+
+inline void Robot::kill(Robot *robotToKill)
+{
+    robotToKill->minusOneLife();
+    this->addKill(1);
+    int i = 0;
+
+    if (robotToKill->getLives() > 0)
+    {
+        for (; i < Robot::robotDeque.size(); i++)
+        {
+            if (Robot::robotDeque[i] == robotToKill)
+            {
+                Robot::reviveDeque.push_back(robotToKill);
+            }
+        }
+    }
+
+    Robot::robotDeque.erase(i);
 }
 
 class TramplingRobot : public Robot
