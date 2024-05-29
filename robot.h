@@ -16,18 +16,24 @@ private:
     int posX = 0;
     int posY = 0;
     string statusLog = "";
-    
+
     // Exception for when lives is decremented past 0
-    class NoLivesLeft {};
+    class NoLivesLeft
+    {
+    };
 
     // Exception for adding negative number of kills
-    class AddingNegativeKills {};
+    class AddingNegativeKills
+    {
+    };
+
 
 public:
-    static Deque<Robot*> robotDeque;
-    static Deque<Robot*> reviveDeque;
-    // - set name
-    // - set position
+    // Exception when referencing a position outside of the game board
+    class PositionOutsideOfBoard
+    {
+    };
+
 
     // Accessors
 
@@ -44,6 +50,7 @@ public:
     void minusOneLife();
     void addKill(int killsToAdd);
 };
+
 Deque<Robot *> Robot::robotDeque;
 Deque<Robot *> Robot::reviveDeque;
 
