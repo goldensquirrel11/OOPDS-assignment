@@ -286,58 +286,59 @@ inline Cell LookingRobot::look(int relativeX, int relativeY)
 class FiringRobot : public virtual Robot
 {
 private:
-    /* data */
+    int fireRange = 1;
+
 public:
-    FiringRobot(/* args */);
-    ~FiringRobot();
+    // Exception for when the robot attempts to shoot itself
+    class AttemptToShootSelf
+    {
+    };
+
+    virtual void fire(int relativeX, int relativeY);
+
+    int getFireRange() const;
+
+    void setFireRange(int fireRange);
 };
-
-FiringRobot::FiringRobot(/* args */)
-{
-}
-
-FiringRobot::~FiringRobot()
-{
-}
 
 inline void FiringRobot::fire(int relativeX, int relativeY)
 {
-private:
-    /* data */
-public:
-    MovingRobot(/* args */);
-    ~MovingRobot();
-};
+    if (relativeX == 0 && relativeY == 0)
+    {
+        throw AttemptToShootSelf();
+    }
 
-MovingRobot::MovingRobot(/* args */)
-{
+    int positionX = this->getPositionX() + relativeX;
+    int positionY = this->getPositionY() + relativeY;
+
+    if (positionX >= Board::getWidth() || positionY >= Board::getHeight() || positionX < 0 || positionY < 0)
+    {
+        throw PositionOutsideOfBoard();
+    }
+
+    for (int i = 0; i < Robot::robotDeque.size(); i++)
+    {
+        if (Robot::robotDeque[i]->getPositionX() == positionX && Robot::robotDeque[i]->getPositionY() == positionY)
+        {
+            this->kill(Robot::robotDeque[i]);
+            // TODO: Log fire (kill)
+            return;
+        }
+    }
+
+    // TODO: Log fire (no kill)
 }
 
-MovingRobot::~MovingRobot()
+inline int FiringRobot::getFireRange() const
 {
+    return this->fireRange;
 }
 
-class RoboCop : public LookingRobot, public MovingRobot, public FiringRobot
+inline void FiringRobot::setFireRange(int fireRange)
 {
-private:
-    /* data */
-public:
-    RoboCop(/* args */);
-    ~RoboCop();
-};
-
-RoboCop::RoboCop(/* args */)
-{
+    this->fireRange = fireRange;
 }
 
-RoboCop::~RoboCop()
-{
-}
-
-class Terminator : public LookingRobot, public MovingRobot, public TramplingRobot
-{
-private:
-    /* data */
 public:
     Terminator(/* args */);
     ~Terminator();
