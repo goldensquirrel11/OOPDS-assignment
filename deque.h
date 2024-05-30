@@ -302,9 +302,14 @@ inline void Deque<T>::clear()
 template <typename T>
 inline T &Deque<T>::operator=(T &rval)
 {
-    if (this != &rval) {
-        swap(head, rval.head);
-        swap(tail, rval.tail);
+    if (this != &rval)
+    {
+        node *cursor = rval.head;
+        while (cursor != nullptr)
+        {
+            push_back(cursor->data);
+            cursor = cursor->next;
+        }
     }
 
     return *this;
@@ -318,11 +323,8 @@ inline T &Deque<T>::operator=(T &&rval)
 {
     if (this != &rval)
     {
-        node *cursor = rval.head;
-        while (cursor != nullptr) {
-            push_back(cursor->data);
-            cursor = cursor->next;
-        }
+        swap(head, rval.head);
+        swap(tail, rval.tail);
     }
 
     return *this;
