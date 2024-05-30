@@ -27,7 +27,6 @@ private:
     {
     };
 
-
 public:
     // Exception when referencing a position outside of the game board
     class PositionOutsideOfBoard
@@ -37,7 +36,7 @@ public:
     static Deque<Robot *> robotDeque;
     static Deque<Robot *> reviveDeque;
 
-    Robot(string name, string type, int posX, int posY);
+    Robot(string name, int posX, int posY);
 
     // Accessors
 
@@ -46,9 +45,11 @@ public:
     int getPositionY() const;
     int getKillsToNextEvolve() const;
     int getLives() const;
+    string getType() const;
 
     // Modifiers
 
+    void setType(string type);
     void updatePositionX(int newPosX);
     void updatePositionY(int newPosY);
     void minusOneLife();
@@ -62,10 +63,9 @@ public:
 Deque<Robot *> Robot::robotDeque;
 Deque<Robot *> Robot::reviveDeque;
 
-inline Robot::Robot(string name, string type, int posX, int posY)
+inline Robot::Robot(string name, int posX, int posY)
 {
     this->name = name;
-    this->type = type;
     this->posX = posX;
     this->posY = posY;
 }
@@ -95,6 +95,16 @@ inline int Robot::getLives() const
     return this->lives;
 }
 
+inline string Robot::getType() const
+{
+    return this->type;
+}
+
+inline void Robot::setType(string type)
+{
+    this->type = type;
+}
+
 inline void Robot::updatePositionX(int newPosX)
 {
     this->posX = newPosX;
@@ -119,8 +129,9 @@ inline void Robot::addKill(int killsToAdd)
         throw AddingNegativeKills();
 
     killsToNextEvolve -= killsToAdd;
-    
-    if (killsToNextEvolve <= 0) {
+
+    if (killsToNextEvolve <= 0)
+    {
         killsToNextEvolve += 3;
         evolve();
     }
