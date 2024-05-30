@@ -2,6 +2,7 @@
 #define ROBOT_H
 
 #include <string>
+#include <cmath>
 
 #include "deque.h"
 
@@ -391,55 +392,182 @@ inline bool MovingRobot::move(int relativeX, int relativeY)
     return true;
 }
 
-class BlueThunder : public FiringRobot
+class RoboCop : public LookingRobot, public MovingRobot, public FiringRobot
 {
-private:
-    /* data */
 public:
-    BlueThunder(/* args */);
-    ~BlueThunder();
+    RoboCop(string name, int posX, int posY) : Robot(name, posX, posY)
+    {
+        setType("RoboCop");
+        setFireRange(10);
+    };
+
+    void executeTurn();
+    void evolve();
 };
 
-BlueThunder::BlueThunder(/* args */)
+inline void RoboCop::executeTurn()
 {
+    Deque<Cell> scannedCells;
+
+    // Looking at all adjacent cells
+    for (int i = -1; i <= 1; i++)
+    {
+        for (int j = -1; j <= 1; j++)
+        {
+            if (i == 0 && j == 0)
+                continue;
+
+            Cell thisCell = look(i, j);
+
+            if (!thisCell.isValid || thisCell.occupant != nullptr)
+                continue;
+
+            scannedCells.push_back(thisCell);
+        }
+    }
+
+    // Moving to a random cell if any are valid
+    if (scannedCells.size() != 0)
+    {
+        int cellIndex = RNG::integer(0, scannedCells.size() - 1);
+
+        move(scannedCells[cellIndex].relativeX, scannedCells[cellIndex].relativeY);
+    }
+
+    // Fire 3 times at random positions
+    int shotsLeft = 3;
+    while (shotsLeft > 0)
+    {
+        int offset = getFireRange();
+
+        int relativeX = RNG::integer(-offset, offset);
+
+        offset = offset - abs(relativeX);
+
+        int relativeY = RNG::integer(-offset, offset);
+
+        try
+        {
+            fire(relativeX, relativeY);
+        }
+        catch (FiringRobot::AttemptToShootSelf)
+        {
+            continue;
+        }
+        catch (Robot::PositionOutsideOfBoard)
+        {
+            continue;
+        }
+
+        shotsLeft--;
+    }
 }
 
-BlueThunder::~BlueThunder()
+inline void RoboCop::evolve()
 {
+    // TODO: RoboCop Evolve
 }
 
-class Madbot : public FiringRobot
-{
-private:
-    /* data */
-public:
-    Madbot(/* args */);
-    ~Madbot();
-};
+// class Terminator : public LookingRobot, public MovingRobot, public TramplingRobot
+// {
+// private:
+//     /* data */
+// public:
+//     Terminator(/* args */);
+//     ~Terminator();
+// };
 
-Madbot::Madbot(/* args */)
-{
-}
+// Terminator::Terminator(/* args */)
+// {
+// }
 
-Madbot::~Madbot()
-{
-}
+// Terminator::~Terminator()
+// {
+// }
 
-class RoboTank : public FiringRobot
-{
-private:
-    /* data */
-public:
-    RoboTank(/* args */);
-    ~RoboTank();
-};
+// class TerminatorRoboCop : public LookingRobot, public MovingRobot, public TramplingRobot, public FiringRobot
+// {
+// private:
+//     /* data */
+// public:
+//     TerminatorRoboCop(/* args */);
+//     ~TerminatorRoboCop();
+// };
 
-RoboTank::RoboTank(/* args */)
-{
-}
+// TerminatorRoboCop::TerminatorRoboCop(/* args */)
+// {
+// }
 
-RoboTank::~RoboTank()
-{
-}
+// TerminatorRoboCop::~TerminatorRoboCop()
+// {
+// }
+
+// class UltimateRobot : public LookingRobot, public MovingRobot, public TramplingRobot, public FiringRobot
+// {
+// private:
+//     /* data */
+// public:
+//     UltimateRobot(/* args */);
+//     ~UltimateRobot();
+// };
+
+// UltimateRobot::UltimateRobot(/* args */)
+// {
+// }
+
+// UltimateRobot::~UltimateRobot()
+// {
+// }
+
+// class BlueThunder : public FiringRobot
+// {
+// private:
+//     /* data */
+// public:
+//     BlueThunder(/* args */);
+//     ~BlueThunder();
+// };
+
+// BlueThunder::BlueThunder(/* args */)
+// {
+// }
+
+// BlueThunder::~BlueThunder()
+// {
+// }
+
+// class Madbot : public FiringRobot
+// {
+// private:
+//     /* data */
+// public:
+//     Madbot(/* args */);
+//     ~Madbot();
+// };
+
+// Madbot::Madbot(/* args */)
+// {
+// }
+
+// Madbot::~Madbot()
+// {
+// }
+
+// class RoboTank : public FiringRobot
+// {
+// private:
+//     /* data */
+// public:
+//     RoboTank(/* args */);
+//     ~RoboTank();
+// };
+
+// RoboTank::RoboTank(/* args */)
+// {
+// }
+
+// RoboTank::~RoboTank()
+// {
+// }
 
 #endif
