@@ -170,6 +170,7 @@ inline void TramplingRobot::trample()
         if (Robot::robotDeque[i]->getPositionX() == this->getPositionX() && Robot::robotDeque[i]->getPositionY() == this->getPositionY() && Robot::robotDeque[i] != this)
         {
             this->kill(Robot::robotDeque[i]);
+            return;
         }
     }
 }
