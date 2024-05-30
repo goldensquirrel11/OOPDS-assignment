@@ -339,51 +339,56 @@ inline void FiringRobot::setFireRange(int fireRange)
     this->fireRange = fireRange;
 }
 
-public:
-    Terminator(/* args */);
-    ~Terminator();
-};
-
-Terminator::Terminator(/* args */)
-{
-}
-
-Terminator::~Terminator()
-{
-}
-
-class TerminatorRoboCop : public LookingRobot, public MovingRobot, public TramplingRobot, public FiringRobot
+class MovingRobot : public virtual Robot
 {
 private:
-    /* data */
+    int moveRange = 1;
+
+    // Exception when robot moves to the same position it is currently in
+    class RelativePositionIsZero
+    {
+    };
+
 public:
-    TerminatorRoboCop(/* args */);
-    ~TerminatorRoboCop();
+    bool move(int relativeX, int relativeY);
 };
 
-TerminatorRoboCop::TerminatorRoboCop(/* args */)
+/// @brief Moves the robot object to a specified relative position
+/// @param relativeX relative X position
+/// @param relativeY relative X position
+/// @return true if the robot moves successfully, false if the position is blocked by another robot
+/// @exception RelativePositionIsZero When moving to the same spot the robot is currently at
+/// @exception PositionOutsideOfBoard When moving to a position outside of the board
+inline bool MovingRobot::move(int relativeX, int relativeY)
 {
-}
+    // TODO: Define move function
+    if (relativeX == 0 && relativeY == 0)
+    {
+        throw RelativePositionIsZero();
+    }
 
-TerminatorRoboCop::~TerminatorRoboCop()
-{
-}
+    int positionX = this->getPositionX() + relativeX;
+    int positionY = this->getPositionY() + relativeY;
 
-class UltimateRobot : public LookingRobot, public MovingRobot, public TramplingRobot, public FiringRobot
-{
-private:
-    /* data */
-public:
-    UltimateRobot(/* args */);
-    ~UltimateRobot();
-};
+    if (positionX >= Board::getWidth() || positionY >= Board::getHeight() || positionX < 0 || positionY < 0)
+    {
+        throw PositionOutsideOfBoard();
+    }
 
-UltimateRobot::UltimateRobot(/* args */)
-{
-}
+    for (int i = 0; i < Robot::robotDeque.size(); i++)
+    {
+        if (Robot::robotDeque[i]->getPositionX() == positionX && Robot::robotDeque[i]->getPositionY() == positionY)
+        {
+            return false;
+        }
+    }
 
-UltimateRobot::~UltimateRobot()
-{
+    this->updatePositionX(positionX);
+    this->updatePositionY(positionY);
+
+    // TODO: Log move
+
+    return true;
 }
 
 class BlueThunder : public FiringRobot
