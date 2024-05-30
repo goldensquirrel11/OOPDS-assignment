@@ -175,17 +175,92 @@ inline void TramplingRobot::trample()
     }
 }
 
-class LookingRobot : public Robot
+class Cell
+{
+public:
+    // true if the Cell is located in the board, false otherwise
+    bool isValid = false;
+
+    // points to the robot occupying the cell, nullptr if there are no robots in the cell
+    Robot *occupant = nullptr;
+
+    int relativeX = 0;
+    int relativeY = 0;
+
+    Cell(int posX, int posY)
+    {
+        this->relativeX = posX;
+        this->relativeY = posY;
+    }
+
+    Cell(bool isValid, Robot *occupant, int relativeX, int relativeY)
+    {
+        this->isValid = isValid;
+        this->occupant = occupant;
+        this->relativeX = relativeX;
+        this->relativeY = relativeY;
+    }
+
+    Cell(const Cell &rval)
+    {
+        isValid = rval.isValid;
+        occupant = rval.occupant;
+    }
+
+    Cell(Cell &&rval)
+    {
+        swap(isValid, rval.isValid);
+        swap(occupant, rval.occupant);
+
+        rval.occupant = nullptr;
+    }
+
+    Cell &operator=(const Cell &rval)
+    {
+        if (this != &rval)
+        {
+            isValid = rval.isValid;
+            occupant = rval.occupant;
+        }
+
+        return *this;
+    }
+
+    Cell &operator=(Cell &&rval)
+    {
+        if (this != &rval)
+        {
+            swap(isValid, rval.isValid);
+            swap(occupant, rval.occupant);
+
+            rval.occupant = nullptr;
+        }
+
+        return *this;
+    }
+
+    ~Cell()
+    {
+        occupant = nullptr;
+        delete occupant;
+        occupant = nullptr;
+    }
+};
+
 class LookingRobot : public virtual Robot
 {
 private:
     int lookRange = 1;
 
 public:
-    Robot* look(int relativeX, int relativeY);
+    Cell look(int relativeX, int relativeY);
 };
 
-inline Robot* LookingRobot::look(int relativeX, int relativeY)
+/// @brief checks if there are any robots in a coordinate position
+/// @param relativeX relative X position
+/// @param relativeY relative Y position
+/// @return Cell object
+inline Cell LookingRobot::look(int relativeX, int relativeY)
 {
     int positionX = this->getPositionX() + relativeX;
     int positionY = this->getPositionY() + relativeY;
@@ -193,15 +268,19 @@ inline Robot* LookingRobot::look(int relativeX, int relativeY)
     // Checking if the position that is being referenced is a position inside the game board
     if (positionX >= Board::getWidth() || positionY >= Board::getHeight() || positionX < 0 || positionY < 0)
     {
-        throw PositionOutsideOfBoard();
+        return Cell(relativeX, relativeY);
     }
 
     for (int i = 0; i < robotDeque.size(); i++)
     {
-        if (robotDeque[i]->getPositionX() == positionX && robotDeque[i]->getPositionY() == positionY) {
-            return robotDeque[i];
+        if (robotDeque[i]->getPositionX() == positionX && robotDeque[i]->getPositionY() == positionY)
+        {
+            // TODO: Log enemy spotted
+            return Cell(true, robotDeque[i], relativeX, relativeY);
         }
     }
+
+    return Cell(true, nullptr, relativeX, relativeY);
 }
 
 class FiringRobot : public virtual Robot
