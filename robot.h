@@ -157,7 +157,7 @@ inline void Robot::kill(Robot *robotToKill)
     Robot::robotDeque.erase(i);
 }
 
-class TramplingRobot : public Robot
+class TramplingRobot : public virtual Robot
 {
 public:
     void trample();
@@ -176,6 +176,7 @@ inline void TramplingRobot::trample()
 }
 
 class LookingRobot : public Robot
+class LookingRobot : public virtual Robot
 {
 private:
     int lookRange = 1;
@@ -203,7 +204,7 @@ inline Robot* LookingRobot::look(int relativeX, int relativeY)
     }
 }
 
-class FiringRobot : public Robot
+class FiringRobot : public virtual Robot
 {
 private:
     /* data */
@@ -220,7 +221,7 @@ FiringRobot::~FiringRobot()
 {
 }
 
-class MovingRobot : public Robot
+inline void FiringRobot::fire(int relativeX, int relativeY)
 {
 private:
     /* data */
