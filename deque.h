@@ -325,6 +325,9 @@ inline T &Deque<T>::operator=(T &&rval)
     {
         swap(head, rval.head);
         swap(tail, rval.tail);
+
+        rval.head = nullptr;
+        rval.tail = nullptr;
     }
 
     return *this;
