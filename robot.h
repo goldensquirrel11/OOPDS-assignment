@@ -5,6 +5,7 @@
 #include <cmath>
 
 #include "deque.h"
+#include "log.h"
 
 using namespace std;
 
@@ -13,6 +14,8 @@ class Robot
 private:
     string name;
     string type;
+    /// @brief The next turn number this robot should execute it's actions
+    int nextTurn = 1;
     int lives = 3;
     int killsToNextEvolve = 3;
     int posX = 0;
@@ -47,6 +50,7 @@ public:
     int getKillsToNextEvolve() const;
     int getLives() const;
     string getType() const;
+    int getNextTurn() const;
     virtual int getLookRange() const;
     virtual int getFireRange() const;
     virtual int getMoveRange() const;
@@ -55,6 +59,7 @@ public:
     // Modifiers
 
     void setType(string type);
+    void setNextTurn(int turn);
     void updatePositionX(int newPosX);
     void updatePositionY(int newPosY);
     void minusOneLife();
@@ -105,6 +110,11 @@ inline string Robot::getType() const
     return this->type;
 }
 
+inline int Robot::getNextTurn() const
+{
+    return this->nextTurn;
+}
+
 inline int Robot::getLookRange() const
 {
     return 0;
@@ -128,6 +138,11 @@ inline bool Robot::canTrample() const
 inline void Robot::setType(string type)
 {
     this->type = type;
+}
+
+inline void Robot::setNextTurn(int turn)
+{
+    this->nextTurn = turn;
 }
 
 inline void Robot::updatePositionX(int newPosX)
@@ -197,6 +212,7 @@ inline void TramplingRobot::trample()
         if (Robot::robotDeque[i]->getPositionX() == this->getPositionX() && Robot::robotDeque[i]->getPositionY() == this->getPositionY() && Robot::robotDeque[i] != this)
         {
             this->kill(Robot::robotDeque[i]);
+            Log::trample(this->getName(), Robot::robotDeque[i]->getName());
             return;
         }
     }
@@ -210,10 +226,10 @@ inline bool TramplingRobot::canTrample() const
 class Cell
 {
 public:
-    // true if the Cell is located in the board, false otherwise
+    /// @brief true if the Cell is located in the board, false otherwise
     bool isValid = false;
 
-    // points to the robot occupying the cell, nullptr if there are no robots in the cell
+    /// @brief points to the robot occupying the cell, nullptr if there are no robots in the cell
     Robot *occupant = nullptr;
 
     int relativeX = 0;
@@ -313,7 +329,7 @@ inline Cell LookingRobot::look(int relativeX, int relativeY)
     {
         if (robotDeque[i]->getPositionX() == positionX && robotDeque[i]->getPositionY() == positionY)
         {
-            // TODO: Log enemy spotted
+            Log::enemySpotted(this->getName(), robotDeque[i]->getName(), positionX, positionY);
             return Cell(true, robotDeque[i], relativeX, relativeY);
         }
     }
@@ -359,17 +375,17 @@ inline void FiringRobot::fire(int relativeX, int relativeY)
         throw PositionOutsideOfBoard();
     }
 
+    Log::fire(this->getName(), positionX, positionY);
+
     for (int i = 0; i < Robot::robotDeque.size(); i++)
     {
         if (Robot::robotDeque[i]->getPositionX() == positionX && Robot::robotDeque[i]->getPositionY() == positionY)
         {
             this->kill(Robot::robotDeque[i]);
-            // TODO: Log fire (kill)
+            Log::fireHit(this->getName(), Robot::robotDeque[i]->getName());
             return;
         }
     }
-
-    // TODO: Log fire (no kill)
 }
 
 inline int FiringRobot::getFireRange() const
@@ -406,7 +422,6 @@ public:
 /// @exception PositionOutsideOfBoard When moving to a position outside of the board
 inline bool MovingRobot::move(int relativeX, int relativeY)
 {
-    // TODO: Define move function
     if (relativeX == 0 && relativeY == 0)
     {
         throw RelativePositionIsZero();
@@ -431,7 +446,7 @@ inline bool MovingRobot::move(int relativeX, int relativeY)
     this->updatePositionX(positionX);
     this->updatePositionY(positionY);
 
-    // TODO: Log move
+    Log::move(this->getName(), positionX, positionY);
 
     return true;
 }
