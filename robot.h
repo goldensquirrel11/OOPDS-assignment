@@ -188,6 +188,10 @@ public:
     int relativeX = 0;
     int relativeY = 0;
 
+    Cell()
+    {
+    }
+
     Cell(int posX, int posY)
     {
         this->relativeX = posX;
