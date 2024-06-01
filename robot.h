@@ -13,6 +13,8 @@ class Robot
 private:
     string name;
     string type;
+    /// @brief The next turn number this robot should execute it's actions
+    int nextTurn = 1;
     int lives = 3;
     int killsToNextEvolve = 3;
     int posX = 0;
@@ -47,6 +49,7 @@ public:
     int getKillsToNextEvolve() const;
     int getLives() const;
     string getType() const;
+    int getNextTurn() const;
     virtual int getLookRange() const;
     virtual int getFireRange() const;
     virtual int getMoveRange() const;
@@ -55,6 +58,7 @@ public:
     // Modifiers
 
     void setType(string type);
+    void setNextTurn(int turn);
     void updatePositionX(int newPosX);
     void updatePositionY(int newPosY);
     void minusOneLife();
@@ -105,6 +109,11 @@ inline string Robot::getType() const
     return this->type;
 }
 
+inline int Robot::getNextTurn() const
+{
+    return this->nextTurn;
+}
+
 inline int Robot::getLookRange() const
 {
     return 0;
@@ -128,6 +137,11 @@ inline bool Robot::canTrample() const
 inline void Robot::setType(string type)
 {
     this->type = type;
+}
+
+inline void Robot::setNextTurn(int turn)
+{
+    this->nextTurn = turn;
 }
 
 inline void Robot::updatePositionX(int newPosX)
