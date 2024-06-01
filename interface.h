@@ -20,7 +20,6 @@ private:
     string displayBuffer = "";
     ofstream logFile;
     ifstream interfaceTemplate;
-    static string actionLog;
 
     void readConfigFile(ifstream &configFile);
 
@@ -35,9 +34,9 @@ public:
     Game(ifstream &configFile);
 
     void updateInterface();
-};
 
-string Game::actionLog;
+    bool isValidState() const;
+};
 
 /// @brief Reads in values from the game's initial config file
 /// @param configFile reference to the config file ifstream object
@@ -151,70 +150,55 @@ inline void Game::updateInterface()
 
     string input;
 
+    // Current Game Turn
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
-
     displayBuffer += to_string(turn);
 
+    // Number of robots alive
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
-
     displayBuffer += to_string(Robot::robotDeque.size());
 
+    // Number of robots waiting to revive
+    getline(interfaceTemplate, input, '\'');
+    displayBuffer += input;
+    displayBuffer += to_string(Robot::reviveDeque.size());
+    
+    // Robot actions taken this turn
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
 
-    displayBuffer += Robot::robotDeque.front()->getName();
+    // TODO: Get current turn game log
 
+    // Game board
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
-
-    displayBuffer += Robot::robotDeque.front()->getType();
-
-    getline(interfaceTemplate, input, '\'');
-    displayBuffer += input;
-
-    displayBuffer += Robot::robotDeque.front()->getKillsToNextEvolve();
-
-    getline(interfaceTemplate, input, '\'');
-    displayBuffer += input;
-
-    displayBuffer += Robot::robotDeque.front()->getLookRange();
-
-    getline(interfaceTemplate, input, '\'');
-    displayBuffer += input;
-
-    displayBuffer += Robot::robotDeque.front()->getMoveRange();
-
-    getline(interfaceTemplate, input, '\'');
-    displayBuffer += input;
-
-    if (Robot::robotDeque.front()->canTrample())
-        displayBuffer += "True";
-    else
-        displayBuffer += "False";
-
-    getline(interfaceTemplate, input, '\'');
-    displayBuffer += input;
-
-    displayBuffer += Robot::robotDeque.front()->getFireRange();
-
-    getline(interfaceTemplate, input, '\'');
-    displayBuffer += input;
-
-    // TODO: Get current robot's status log
-
-    getline(interfaceTemplate, input, '\'');
-    displayBuffer += input;
-
     displayBuffer += board.getBoard() + '\n';
 
+    // Display to terminal
     cout << displayBuffer;
 
+    // Record output in log file
     logFile << displayBuffer;
 
     // move the read position back to the beginning of the file
     interfaceTemplate.seekg(0, interfaceTemplate.beg);
+}
+
+/// @brief Determines whether the current game state is valid
+/// @details The current game state is considered invalid when either:
+///             1. the number of robots alive is 1 OR
+///             2. when the turn limit has been reached.
+///          In every other case, the game state is considered valid.
+/// @return true if the game state is valid, false otherwise
+inline bool Game::isValidState() const
+{
+    if (Robot::robotDeque.size() <= 1 || turn >= turnLimit) {
+        return false;
+    }
+
+    return true;
 }
 
 #endif
