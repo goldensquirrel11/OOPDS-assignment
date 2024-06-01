@@ -1,19 +1,10 @@
 [Game Info]
 
 Current Turn: '
-Robots Left: '
+Alive Robots Left: '
+Robots Waiting to Revive: '
 
-[Robot Stats]
-
-Robot Name: '
-Robot Type: '
-Kills to Next Evolution: '
-Looking Range: '
-Moving Range: '
-Can Trample: '
-Firing Range: '
-
-[Action]
+[Action Logs]
 
 '
 
