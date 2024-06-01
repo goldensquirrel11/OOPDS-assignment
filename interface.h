@@ -19,11 +19,14 @@ private:
     int turnLimit = 0;
     string displayBuffer = "";
     ofstream logFile;
+    ifstream interfaceTemplate;
     static string actionLog;
 
     void readConfigFile(ifstream &configFile);
 
     // Exception Classes
+    
+    /// @brief Exception that occurs when the log output file could not be opened
     class LogFileOpeningError
     {
     };
@@ -36,8 +39,9 @@ public:
 
 string Game::actionLog;
 
-    inline void
-    Game::readConfigFile(ifstream &configFile)
+/// @brief Reads in values from the game's initial config file
+/// @param configFile reference to the config file ifstream object
+inline void Game::readConfigFile(ifstream &configFile)
 {
     string input;
 
@@ -47,7 +51,7 @@ string Game::actionLog;
     board.setWidth(stoi(input.substr(0, input.find(' '))));
     board.setHeight(stoi(input.substr(input.find(' ') + 1)));
 
-    // Initialize RNG
+    // Initialize random number generator
     RNG::init(board.getWidth(), board.getHeight());
 
     // Read in turn limit
@@ -85,6 +89,7 @@ string Game::actionLog;
         // TODO: Complete this if-else-if block when all robot classes have been defined
         if (robotType == "RoboCop")
         {
+            Robot::robotDeque.push_back(new RoboCop(robotName, posX, posY));
         }
         else if (robotType == "Terminator")
         {
@@ -106,7 +111,7 @@ string Game::actionLog;
         }
         else
         {
-            // TODO: Throw error for undefined robot type
+            cout << "[ERROR] The robot type " << robotType << " could not be interpreted\n";
         }
     }
 }
@@ -122,9 +127,9 @@ inline Game::Game(ifstream &configFile)
     {
         throw LogFileOpeningError();
     }
-    
+
     logFile.close();
-    
+
     // Open log file in append mode
     logFile.open("game.log", ofstream::app);
 
@@ -132,6 +137,8 @@ inline Game::Game(ifstream &configFile)
     {
         throw LogFileOpeningError();
     }
+    
+    interfaceTemplate.open("interface.template");
 
     updateInterface();
 }
@@ -141,9 +148,6 @@ inline void Game::updateInterface()
     displayBuffer = "";
 
     board.refresh();
-
-    ifstream interfaceTemplate;
-    interfaceTemplate.open("interface.template");
 
     string input;
 
@@ -160,37 +164,40 @@ inline void Game::updateInterface()
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
 
-    // TODO: Get current robot's name
+    displayBuffer += Robot::robotDeque.front()->getName();
 
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
 
-    // TODO: Get current robot's type
+    displayBuffer += Robot::robotDeque.front()->getType();
 
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
 
-    // TODO: Get current robot's kills to next evolution
+    displayBuffer += Robot::robotDeque.front()->getKillsToNextEvolve();
 
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
 
-    // TODO: Get current robot's looking range
+    displayBuffer += Robot::robotDeque.front()->getLookRange();
 
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
 
-    // TODO: Get current robot's moving range
+    displayBuffer += Robot::robotDeque.front()->getMoveRange();
 
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
 
-    // TODO: Get current robot's can trample?
+    if (Robot::robotDeque.front()->canTrample())
+        displayBuffer += "True";
+    else
+        displayBuffer += "False";
 
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
 
-    // TODO: Get current robot's firing range
+    displayBuffer += Robot::robotDeque.front()->getFireRange();
 
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
@@ -205,6 +212,9 @@ inline void Game::updateInterface()
     cout << displayBuffer;
 
     logFile << displayBuffer;
+
+    // move the read position back to the beginning of the file
+    interfaceTemplate.seekg(0, interfaceTemplate.beg);
 }
 
 #endif
