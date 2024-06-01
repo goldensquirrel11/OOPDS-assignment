@@ -150,66 +150,36 @@ inline void Game::updateInterface()
 
     string input;
 
+    // Current Game Turn
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
-
     displayBuffer += to_string(turn);
 
+    // Number of robots alive
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
-
     displayBuffer += to_string(Robot::robotDeque.size());
 
+    // Number of robots waiting to revive
+    getline(interfaceTemplate, input, '\'');
+    displayBuffer += input;
+    displayBuffer += to_string(Robot::reviveDeque.size());
+    
+    // Robot actions taken this turn
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
 
-    displayBuffer += Robot::robotDeque.front()->getName();
+    // TODO: Get current turn game log
 
+    // Game board
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
-
-    displayBuffer += Robot::robotDeque.front()->getType();
-
-    getline(interfaceTemplate, input, '\'');
-    displayBuffer += input;
-
-    displayBuffer += Robot::robotDeque.front()->getKillsToNextEvolve();
-
-    getline(interfaceTemplate, input, '\'');
-    displayBuffer += input;
-
-    displayBuffer += Robot::robotDeque.front()->getLookRange();
-
-    getline(interfaceTemplate, input, '\'');
-    displayBuffer += input;
-
-    displayBuffer += Robot::robotDeque.front()->getMoveRange();
-
-    getline(interfaceTemplate, input, '\'');
-    displayBuffer += input;
-
-    if (Robot::robotDeque.front()->canTrample())
-        displayBuffer += "True";
-    else
-        displayBuffer += "False";
-
-    getline(interfaceTemplate, input, '\'');
-    displayBuffer += input;
-
-    displayBuffer += Robot::robotDeque.front()->getFireRange();
-
-    getline(interfaceTemplate, input, '\'');
-    displayBuffer += input;
-
-    // TODO: Get current robot's status log
-
-    getline(interfaceTemplate, input, '\'');
-    displayBuffer += input;
-
     displayBuffer += board.getBoard() + '\n';
 
+    // Display to terminal
     cout << displayBuffer;
 
+    // Record output in log file
     logFile << displayBuffer;
 
     // move the read position back to the beginning of the file
