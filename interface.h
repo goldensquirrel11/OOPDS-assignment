@@ -20,7 +20,6 @@ private:
     string displayBuffer = "";
     ofstream logFile;
     ifstream interfaceTemplate;
-    static string actionLog;
 
     void readConfigFile(ifstream &configFile);
 
@@ -36,8 +35,6 @@ public:
 
     void updateInterface();
 };
-
-string Game::actionLog;
 
 /// @brief Reads in values from the game's initial config file
 /// @param configFile reference to the config file ifstream object
