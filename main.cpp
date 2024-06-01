@@ -23,5 +23,12 @@ int main()
 
     Game game(configFile);
 
+    while (game.isValidState()) {
+        game.nextTurn();
+        game.updateInterface();
+    }
+
+    cout << "\nGAME OVER!\n";
+
     return 0;
 }
