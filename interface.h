@@ -34,6 +34,8 @@ public:
     Game(ifstream &configFile);
 
     void updateInterface();
+
+    bool isValidState() const;
 };
 
 /// @brief Reads in values from the game's initial config file
@@ -212,6 +214,21 @@ inline void Game::updateInterface()
 
     // move the read position back to the beginning of the file
     interfaceTemplate.seekg(0, interfaceTemplate.beg);
+}
+
+/// @brief Determines whether the current game state is valid
+/// @details The current game state is considered invalid when either:
+///             1. the number of robots alive is 1 OR
+///             2. when the turn limit has been reached.
+///          In every other case, the game state is considered valid.
+/// @return true if the game state is valid, false otherwise
+inline bool Game::isValidState() const
+{
+    if (Robot::robotDeque.size() <= 1 || turn >= turnLimit) {
+        return false;
+    }
+
+    return true;
 }
 
 #endif
