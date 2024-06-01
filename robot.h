@@ -47,6 +47,10 @@ public:
     int getKillsToNextEvolve() const;
     int getLives() const;
     string getType() const;
+    virtual int getLookRange() const;
+    virtual int getFireRange() const;
+    virtual int getMoveRange() const;
+    virtual bool canTrample() const;
 
     // Modifiers
 
@@ -99,6 +103,26 @@ inline int Robot::getLives() const
 inline string Robot::getType() const
 {
     return this->type;
+}
+
+inline int Robot::getLookRange() const
+{
+    return 0;
+}
+
+inline int Robot::getFireRange() const
+{
+    return 0;
+}
+
+inline int Robot::getMoveRange() const
+{
+    return 0;
+}
+
+inline bool Robot::canTrample() const
+{
+    return false;
 }
 
 inline void Robot::setType(string type)
@@ -162,6 +186,8 @@ class TramplingRobot : public virtual Robot
 {
 public:
     void trample();
+
+    bool canTrample() const;
 };
 
 inline void TramplingRobot::trample()
@@ -174,6 +200,11 @@ inline void TramplingRobot::trample()
             return;
         }
     }
+}
+
+inline bool TramplingRobot::canTrample() const
+{
+    return true;
 }
 
 class Cell
@@ -259,6 +290,8 @@ private:
 
 public:
     Cell look(int relativeX, int relativeY);
+
+    int getLookRange() const;
 };
 
 /// @brief checks if there are any robots in a coordinate position
@@ -286,6 +319,11 @@ inline Cell LookingRobot::look(int relativeX, int relativeY)
     }
 
     return Cell(true, nullptr, relativeX, relativeY);
+}
+
+inline int LookingRobot::getLookRange() const
+{
+    return this->lookRange;
 }
 
 class FiringRobot : public virtual Robot
@@ -356,6 +394,8 @@ private:
 
 public:
     bool move(int relativeX, int relativeY);
+
+    int getMoveRange() const;
 };
 
 /// @brief Moves the robot object to a specified relative position
@@ -394,6 +434,11 @@ inline bool MovingRobot::move(int relativeX, int relativeY)
     // TODO: Log move
 
     return true;
+}
+
+inline int MovingRobot::getMoveRange() const
+{
+    return this->moveRange;
 }
 
 class RoboCop : public LookingRobot, public MovingRobot, public FiringRobot
