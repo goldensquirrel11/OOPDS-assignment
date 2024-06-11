@@ -8,9 +8,9 @@ class Deque
 private:
     // Node linking Structure
     //
-    //              Head                          Tail      
+    //              Head                          Tail
     // nullptr  <- [node] ->   <- [node] ->   <- [node] ->  nullptr
-    //         prev data next prev data next prev data next 
+    //         prev data next prev data next prev data next
     //
     struct node
     {
@@ -37,9 +37,9 @@ public:
 
     int size();
     bool is_empty();
-    T front();
-    T back();
-    T& operator[](int i);
+    T &front();
+    T &back();
+    T &operator[](int i);
 
     // Modifiers
 
@@ -48,8 +48,8 @@ public:
     T pop_back();
     T pop_front();
     void clear();
-    T& operator=(T &rval);
-    T& operator=(T &&rval);
+    T &operator=(T &rval);
+    T &operator=(T &&rval);
     void erase(int i);
 };
 
@@ -78,8 +78,9 @@ inline Deque<T>::Deque(const Deque &object)
     {
         return;
     }
-    
-    for (int i = 0; i<object.size(); i++) {
+
+    for (int i = 0; i < object.size(); i++)
+    {
         this->push_back(object[i]);
     }
 }
@@ -99,15 +100,16 @@ inline Deque<T>::Deque(Deque &&object)
 template <typename T>
 inline int Deque<T>::size()
 {
-        node *cursor = head;
-        int counter = 0;
+    node *cursor = head;
+    int counter = 0;
 
-        while (cursor != nullptr) {
-            counter += 1;
-            cursor = cursor->next;
-        }
+    while (cursor != nullptr)
+    {
+        counter += 1;
+        cursor = cursor->next;
+    }
 
-        return counter;
+    return counter;
 }
 
 template <typename T>
@@ -124,7 +126,7 @@ inline bool Deque<T>::is_empty()
 }
 
 template <typename T>
-inline T Deque<T>::front()
+inline T &Deque<T>::front()
 {
     if (head == nullptr)
     {
@@ -137,7 +139,7 @@ inline T Deque<T>::front()
 }
 
 template <typename T>
-inline T Deque<T>::back()
+inline T &Deque<T>::back()
 {
     if (tail == nullptr)
     {
@@ -149,13 +151,13 @@ inline T Deque<T>::back()
     }
 }
 
-/// @brief 
+/// @brief
 /// @tparam T datatype
 /// @param i index
 /// @return reference to object at index i
 /// @exception OutOfBounds returned when referencing an invalid index
 template <typename T>
-inline T& Deque<T>::operator[](int i)
+inline T &Deque<T>::operator[](int i)
 {
     if (i >= this->size())
     {
@@ -228,22 +230,25 @@ inline T Deque<T>::pop_back()
     {
         node *temp = tail;
         T returnData = temp->data;
-        
-        if (tail == head) {
+
+        if (tail == head)
+        {
             tail = nullptr;
             head = nullptr;
-        } else {
+        }
+        else
+        {
             tail = tail->prev;
             tail->next = nullptr;
         }
-        
+
         delete temp->next;
         temp->next = nullptr;
 
         temp->prev = nullptr;
         delete temp->prev;
         temp->prev = nullptr;
-        
+
         delete temp;
         temp = nullptr;
 
@@ -277,7 +282,7 @@ inline T Deque<T>::pop_front()
         temp->next = nullptr;
         delete temp->next;
         temp->next = nullptr;
-        
+
         delete temp->prev;
         temp->prev = nullptr;
         delete temp;
@@ -297,8 +302,8 @@ inline void Deque<T>::clear()
 }
 
 /// @brief Copy assignment operator
-/// @param rval 
-/// @return 
+/// @param rval
+/// @return
 template <typename T>
 inline T &Deque<T>::operator=(T &rval)
 {
@@ -316,8 +321,8 @@ inline T &Deque<T>::operator=(T &rval)
 }
 
 /// @brief Move assignment operator
-/// @param rval 
-/// @return 
+/// @param rval
+/// @return
 template <typename T>
 inline T &Deque<T>::operator=(T &&rval)
 {
