@@ -3,6 +3,10 @@
 
 #include <string>
 
+#include "robotbase.h"
+
+using namespace std;
+
 /// @brief
 /// @param character
 /// @param numberOfTimes
