@@ -90,52 +90,64 @@ inline void Log::enemySpotted(string robotName, string enemyRobot, int posX, int
     inputAtNextPosition(logTemplate, enemyRobot);
     inputAtNextPosition(logTemplate, posX);
     inputAtNextPosition(logTemplate, posY);
+
+    logBuffer += '\n';
 }
 
 inline void Log::move(string robotName, int posX, int posY)
 {
-    istringstream logTemplate(ENEMY_SPOTTED);
+    istringstream logTemplate(MOVE);
     string temp;
 
     inputAtNextPosition(logTemplate, robotName);
     inputAtNextPosition(logTemplate, posX);
     inputAtNextPosition(logTemplate, posY);
+
+    logBuffer += '\n';
 }
 
 inline void Log::trample(string robotName, string enemyRobot)
 {
-    istringstream logTemplate(ENEMY_SPOTTED);
+    istringstream logTemplate(TRAMPLE);
     string temp;
 
     inputAtNextPosition(logTemplate, robotName);
     inputAtNextPosition(logTemplate, enemyRobot);
+
+    logBuffer += '\n';
 }
 
 inline void Log::fire(string robotName, int posX, int posY)
 {
-    istringstream logTemplate(ENEMY_SPOTTED);
+    istringstream logTemplate(FIRE);
     string temp;
 
     inputAtNextPosition(logTemplate, robotName);
     inputAtNextPosition(logTemplate, posX);
     inputAtNextPosition(logTemplate, posY);
+
+    logBuffer += '\n';
 }
 
 inline void Log::fireHit(string robotName, string enemyRobot)
 {
-    istringstream logTemplate(ENEMY_SPOTTED);
+    istringstream logTemplate(FIRE_HIT);
     string temp;
 
     inputAtNextPosition(logTemplate, robotName);
     inputAtNextPosition(logTemplate, enemyRobot);
+
+    logBuffer += '\n';
 }
 
 inline void Log::evolve(string robotName, string robotType)
 {
-    istringstream logTemplate(ENEMY_SPOTTED);
+    istringstream logTemplate(EVOLVE);
     string temp;
 
     inputAtNextPosition(logTemplate, robotName);
+
+    logBuffer += '\n';
 }
 
 #endif
