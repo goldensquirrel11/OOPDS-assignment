@@ -344,28 +344,43 @@ inline T &Deque<T>::operator=(T &&rval)
 template <typename T>
 inline void Deque<T>::erase(int i)
 {
-    if (i >= size())
+    if (i >= size()) {
         throw OutOfBounds();
+    }
 
-    if (head == nullptr) {
+    if (head == nullptr)
+    {
         return;
     }
 
     node *currentNode = head;
-    for (; i>0; i--) {
+    for (; i > 0; i--)
+    {
         currentNode = currentNode->next;
     }
 
     node *nextNode = currentNode->next;
     node *prevNode = currentNode->prev;
 
-    if (prevNode != nullptr) {
+    if (prevNode != nullptr)
+    {
         prevNode->next = nextNode;
     }
 
-    if (nextNode != nullptr) {
+    if (nextNode != nullptr)
+    {
         nextNode->prev = prevNode;
     }
-}
+
+    nextNode = nullptr;
+    prevNode = nullptr;
+    delete nextNode;
+    delete prevNode;
+    nextNode = nullptr;
+    prevNode = nullptr;
+
+    delete currentNode;
+    currentNode = nullptr;
+g}
 
 #endif
