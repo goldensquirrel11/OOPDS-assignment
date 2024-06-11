@@ -39,8 +39,7 @@ public:
     // Accessors
     static int getWidth();
     static int getHeight();
-    string getBoard();
-    bool isPositionValid(int posX, int PosY);
+    string getBoard() const;
 
     // Modifiers
     void setWidth(int width);
@@ -61,7 +60,7 @@ int Board::getHeight()
     return Board::height;
 }
 
-inline string Board::getBoard()
+inline string Board::getBoard() const
 {
     return boardBuffer;
 }
@@ -76,7 +75,6 @@ inline void Board::setHeight(int height)
     Board::height = height;
 }
 
-// TODO: Rewrite this function once a working Robot Deque is available
 inline void Board::refresh(/* pass in robot Queue */)
 {
     boardBuffer = "";
@@ -86,10 +84,49 @@ inline void Board::refresh(/* pass in robot Queue */)
     boardBuffer += CORNER;
     boardBuffer += '\n';
 
-    for (int i = height; i > 0; i--)
+    int robotCount = Robot::robotDeque.size();
+
+    struct Info
+    {
+        char firstChar;
+        int positionX;
+        int positionY;
+    };
+
+    /// For the sake of speed, arrays are used here to quickly look up
+    /// the first letter of each robot name and robot position
+
+    /// @brief array of all robot's info
+    Info robotInfo[robotCount];
+
+    // Reading in values from robotDeque
+    for (int i = 0; i < robotCount; i++)
+    {
+        robotInfo[i].firstChar = Robot::robotDeque[i]->getName()[0];
+        robotInfo[i].positionX = Robot::robotDeque[i]->getPositionX();
+        robotInfo[i].positionY = Robot::robotDeque[i]->getPositionY();
+    }
+
+    for (int y = 0; y < height; y++)
     {
         boardBuffer += VERTICAL_BAR;
-        boardBuffer += repeatChar(EMPTY_SPACE, width);
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int k = 0; k < robotCount; k++)
+            {
+                if (robotInfo[k].positionX == x && robotInfo[k].positionY == y)
+                {
+                    boardBuffer += robotInfo[k].firstChar;
+                    break;
+                }
+                else if (k == robotCount - 1)
+                {
+                    boardBuffer += EMPTY_SPACE;
+                }
+            }
+        }
+
         boardBuffer += VERTICAL_BAR;
         boardBuffer += '\n';
     }
