@@ -381,6 +381,6 @@ inline void Deque<T>::erase(int i)
 
     delete currentNode;
     currentNode = nullptr;
-g}
+}
 
 #endif

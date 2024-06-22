@@ -24,8 +24,8 @@ inline void TramplingRobot::trample()
     {
         if (Robot::robotDeque[i]->getPositionX() == this->getPositionX() && Robot::robotDeque[i]->getPositionY() == this->getPositionY() && Robot::robotDeque[i] != this)
         {
-            this->kill(Robot::robotDeque[i]);
             Log::trample(this->getName(), Robot::robotDeque[i]->getName());
+            this->kill(Robot::robotDeque[i]);
             return;
         }
     }
@@ -70,12 +70,16 @@ public:
     {
         isValid = rval.isValid;
         occupant = rval.occupant;
+        relativeX = rval.relativeX;
+        relativeY = rval.relativeY;
     }
 
     Cell(Cell &&rval)
     {
         swap(isValid, rval.isValid);
         swap(occupant, rval.occupant);
+        swap(relativeX, rval.relativeX);
+        swap(relativeY, rval.relativeY);
 
         rval.occupant = nullptr;
     }
@@ -86,6 +90,8 @@ public:
         {
             isValid = rval.isValid;
             occupant = rval.occupant;
+            relativeX = rval.relativeX;
+            relativeY = rval.relativeY;
         }
 
         return *this;
@@ -97,6 +103,8 @@ public:
         {
             swap(isValid, rval.isValid);
             swap(occupant, rval.occupant);
+            swap(relativeX, rval.relativeX);
+            swap(relativeY, rval.relativeY);
 
             rval.occupant = nullptr;
         }
@@ -189,13 +197,13 @@ inline void FiringRobot::fire(int relativeX, int relativeY)
     }
 
     Log::fire(this->getName(), positionX, positionY);
-
+    
     for (int i = 0; i < Robot::robotDeque.size(); i++)
     {
         if (Robot::robotDeque[i]->getPositionX() == positionX && Robot::robotDeque[i]->getPositionY() == positionY)
         {
-            this->kill(Robot::robotDeque[i]);
             Log::fireHit(this->getName(), Robot::robotDeque[i]->getName());
+            this->kill(Robot::robotDeque[i]);
             return;
         }
     }
@@ -256,10 +264,10 @@ inline bool MovingRobot::move(int relativeX, int relativeY)
         }
     }
 
+    Log::move(this->getName(), positionX, positionY);
+
     this->updatePositionX(positionX);
     this->updatePositionY(positionY);
-
-    Log::move(this->getName(), positionX, positionY);
 
     return true;
 }
@@ -294,12 +302,15 @@ inline void RoboCop::executeTurn()
             if (i == 0 && j == 0)
                 continue;
 
-            Cell thisCell = look(i, j);
+            scannedCells.push_back(Cell());
 
-            if (!thisCell.isValid || thisCell.occupant != nullptr)
+            scannedCells.back() = look(i, j);
+
+            if (!scannedCells.back().isValid || scannedCells.back().occupant != nullptr)
+            {
+                scannedCells.pop_back();
                 continue;
-
-            scannedCells.push_back(thisCell);
+            }
         }
     }
 
@@ -338,6 +349,8 @@ inline void RoboCop::executeTurn()
 
         shotsLeft--;
     }
+
+    setNextTurn(getNextTurn() + 1);
 }
 
 inline void RoboCop::evolve()
