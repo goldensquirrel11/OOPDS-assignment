@@ -536,6 +536,8 @@ inline void RoboCop::executeTurn()
 
         shotsLeft--;
     }
+
+    setNextTurn(getNextTurn() + 1);
 }
 
 inline void RoboCop::evolve()
