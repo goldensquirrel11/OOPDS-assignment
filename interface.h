@@ -20,6 +20,7 @@ private:
     string displayBuffer = "";
     ofstream logFile;
     ifstream interfaceTemplate;
+    Log actionLog;
 
     void readConfigFile(ifstream &configFile);
 
@@ -169,7 +170,7 @@ inline void Game::updateInterface()
     getline(interfaceTemplate, input, '\'');
     displayBuffer += input;
 
-    // TODO: Get current turn game log
+    displayBuffer += actionLog.getLog();
 
     // Game board
     getline(interfaceTemplate, input, '\'');
@@ -184,6 +185,8 @@ inline void Game::updateInterface()
 
     // move the read position back to the beginning of the file
     interfaceTemplate.seekg(0, interfaceTemplate.beg);
+
+    actionLog.resetLog();
 }
 
 /// @brief Determines whether the current game state is valid
