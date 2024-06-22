@@ -211,8 +211,8 @@ inline void TramplingRobot::trample()
     {
         if (Robot::robotDeque[i]->getPositionX() == this->getPositionX() && Robot::robotDeque[i]->getPositionY() == this->getPositionY() && Robot::robotDeque[i] != this)
         {
-            this->kill(Robot::robotDeque[i]);
             Log::trample(this->getName(), Robot::robotDeque[i]->getName());
+            this->kill(Robot::robotDeque[i]);
             return;
         }
     }
@@ -376,13 +376,13 @@ inline void FiringRobot::fire(int relativeX, int relativeY)
     }
 
     Log::fire(this->getName(), positionX, positionY);
-
+    
     for (int i = 0; i < Robot::robotDeque.size(); i++)
     {
         if (Robot::robotDeque[i]->getPositionX() == positionX && Robot::robotDeque[i]->getPositionY() == positionY)
         {
-            this->kill(Robot::robotDeque[i]);
             Log::fireHit(this->getName(), Robot::robotDeque[i]->getName());
+            this->kill(Robot::robotDeque[i]);
             return;
         }
     }
@@ -443,10 +443,10 @@ inline bool MovingRobot::move(int relativeX, int relativeY)
         }
     }
 
+    Log::move(this->getName(), positionX, positionY);
+
     this->updatePositionX(positionX);
     this->updatePositionY(positionY);
-
-    Log::move(this->getName(), positionX, positionY);
 
     return true;
 }
