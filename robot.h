@@ -257,12 +257,16 @@ public:
     {
         isValid = rval.isValid;
         occupant = rval.occupant;
+        relativeX = rval.relativeX;
+        relativeY = rval.relativeY;
     }
 
     Cell(Cell &&rval)
     {
         swap(isValid, rval.isValid);
         swap(occupant, rval.occupant);
+        swap(relativeX, rval.relativeX);
+        swap(relativeY, rval.relativeY);
 
         rval.occupant = nullptr;
     }
@@ -273,6 +277,8 @@ public:
         {
             isValid = rval.isValid;
             occupant = rval.occupant;
+            relativeX = rval.relativeX;
+            relativeY = rval.relativeY;
         }
 
         return *this;
@@ -284,6 +290,8 @@ public:
         {
             swap(isValid, rval.isValid);
             swap(occupant, rval.occupant);
+            swap(relativeX, rval.relativeX);
+            swap(relativeY, rval.relativeY);
 
             rval.occupant = nullptr;
         }
