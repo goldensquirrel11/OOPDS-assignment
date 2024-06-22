@@ -489,12 +489,15 @@ inline void RoboCop::executeTurn()
             if (i == 0 && j == 0)
                 continue;
 
-            Cell thisCell = look(i, j);
+            scannedCells.push_back(Cell());
 
-            if (!thisCell.isValid || thisCell.occupant != nullptr)
+            scannedCells.back() = look(i, j);
+
+            if (!scannedCells.back().isValid || scannedCells.back().occupant != nullptr)
+            {
+                scannedCells.pop_back();
                 continue;
-
-            scannedCells.push_back(thisCell);
+            }
         }
     }
 
