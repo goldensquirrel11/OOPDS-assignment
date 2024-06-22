@@ -34,6 +34,7 @@ private:
 public:
     Game(ifstream &configFile);
 
+    void nextTurn();
     void updateInterface();
 
     bool isValidState() const;
@@ -86,6 +87,8 @@ inline void Game::readConfigFile(ifstream &configFile)
         else
             posY = stoi(input);
 
+
+
         // TODO: Complete this if-else-if block when all robot classes have been defined
         if (robotType == "RoboCop")
         {
@@ -93,21 +96,27 @@ inline void Game::readConfigFile(ifstream &configFile)
         }
         else if (robotType == "Terminator")
         {
+            // TODO: push back into robotDeque
         }
         else if (robotType == "TerminatorRoboCop")
         {
+            // TODO: push back into robotDeque
         }
         else if (robotType == "BlueThunder")
         {
+            // TODO: push back into robotDeque
         }
         else if (robotType == "Madbot")
         {
+            // TODO: push back into robotDeque
         }
         else if (robotType == "RoboTank")
         {
+            // TODO: push back into robotDeque
         }
         else if (robotType == "UltimateRobot")
         {
+            // TODO: push back into robotDeque
         }
         else
         {
@@ -143,6 +152,28 @@ inline Game::Game(ifstream &configFile)
     updateInterface();
 }
 
+inline void Game::nextTurn()
+{
+    // TODO: Design this function
+    // - added turn counter in robot instances
+    // NOTE: incrementing robot object turn counter is the responsibility of every individual robot object
+
+    // TODO: Check for robots that need a revive
+
+    while (Robot::robotDeque.front()->getNextTurn() == turn)
+    {
+        Robot::robotDeque.front()->executeTurn();
+        Robot::robotDeque.push_back(Robot::robotDeque.pop_front());
+    }
+    
+    turn++;
+}
+
+/// @brief Updates the game display in the terminal
+/// 
+/// Reads interface.template and outputs game data to terminal following the template format.
+/// This function will also log the output to the game.log file.
+/// 
 inline void Game::updateInterface()
 {
     displayBuffer = "";
