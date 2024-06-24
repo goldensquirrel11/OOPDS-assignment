@@ -1,6 +1,8 @@
 #ifndef DEQUE_H
 #define DEQUE_H
 
+#include <cassert>
+
 // Generic double-ended queue class
 template <typename T>
 class Deque
@@ -115,12 +117,14 @@ inline int Deque<T>::size()
 template <typename T>
 inline bool Deque<T>::is_empty()
 {
-    if (head == nullptr || tail == nullptr)
+    if (head == nullptr)
     {
+        assert(tail == nullptr);
         return true;
     }
     else
     {
+        assert(tail != nullptr);
         return false;
     }
 }
@@ -128,27 +132,23 @@ inline bool Deque<T>::is_empty()
 template <typename T>
 inline T &Deque<T>::front()
 {
-    if (head == nullptr)
+    if (is_empty())
     {
         throw OutOfBounds();
     }
-    else
-    {
-        return head->data;
-    }
+    
+    return head->data;
 }
 
 template <typename T>
 inline T &Deque<T>::back()
 {
-    if (tail == nullptr)
+    if (is_empty())
     {
         throw OutOfBounds();
     }
-    else
-    {
-        return tail->data;
-    }
+
+    return tail->data;
 }
 
 /// @brief
@@ -159,12 +159,13 @@ inline T &Deque<T>::back()
 template <typename T>
 inline T &Deque<T>::operator[](int i)
 {
-    if (i >= this->size())
+    if (i >= this->size() || i < 0)
     {
         throw OutOfBounds();
     }
 
     node *cursor = this->head;
+    
     for (; i > 0; i--)
     {
         cursor = cursor->next;
@@ -178,45 +179,45 @@ inline T &Deque<T>::operator[](int i)
 template <typename T>
 inline void Deque<T>::push_back(T data)
 {
+    // Create new node
+    node *new_node = new node;
+    new_node->data = data;
+
+    // if the list is empty
     if (tail == nullptr)
     {
-        tail = new node;
-        tail->data = data;
-        head = tail;
-    }
-    else
-    {
-        node *new_node = new node;
-
-        new_node->data = data;
-
-        tail->next = new_node;
-        new_node->prev = tail;
-
         tail = new_node;
+        head = new_node;
+
+        return;
     }
+
+    tail->next = new_node;
+    new_node->prev = tail;
+
+    tail = new_node;
 }
 
 template <typename T>
 inline void Deque<T>::push_front(T data)
 {
-    if (head == nullptr)
+    // Create new node
+    node *new_node = new node;
+    new_node->data = data;
+    
+    // If the list is empty
+    if (is_empty())
     {
-        head = new node;
-        head->data = data;
-        tail = head;
-    }
-    else
-    {
-        node *new_node = new node;
-
-        new_node->data = data;
-
-        head->prev = new_node;
-        new_node->next = head;
-
         head = new_node;
+        tail = new_node;
+
+        return;
     }
+
+    head->prev = new_node;
+    new_node->next = head;
+
+    head = new_node;
 }
 
 template <typename T>
@@ -226,76 +227,78 @@ inline T Deque<T>::pop_back()
     {
         throw OutOfBounds();
     }
+
+    node *temp = tail;
+    T returnData = temp->data;
+
+    if (tail == head)
+    {
+        tail = nullptr;
+        head = nullptr;
+    }
     else
     {
-        node *temp = tail;
-        T returnData = temp->data;
-
-        if (tail == head)
-        {
-            tail = nullptr;
-            head = nullptr;
-        }
-        else
-        {
-            tail = tail->prev;
-            tail->next = nullptr;
-        }
-
-        delete temp->next;
-        temp->next = nullptr;
-
-        temp->prev = nullptr;
-        delete temp->prev;
-        temp->prev = nullptr;
-
-        delete temp;
-        temp = nullptr;
-
-        return returnData;
+        tail = tail->prev;
+        tail->next = nullptr;
     }
+
+    temp->next = nullptr;
+    temp->prev = nullptr;
+
+    delete temp->next;
+    delete temp->prev;
+
+    temp->prev = nullptr;
+    temp->next = nullptr;
+
+    delete temp;
+    temp = nullptr;
+
+    return returnData;
 }
 
 template <typename T>
 inline T Deque<T>::pop_front()
 {
-    if (head == nullptr)
+    if (is_empty())
     {
         throw OutOfBounds();
     }
+
+    node *temp = head;
+    T returnData = temp->data;
+
+    if (tail == head)
+    {
+        tail = nullptr;
+        head = nullptr;
+    }
     else
     {
-        node *temp = head;
-        T returnData = temp->data;
-
-        if (tail == head)
-        {
-            tail = nullptr;
-            head = nullptr;
-        }
-        else
-        {
-            head = head->next;
-            head->prev = nullptr;
-        }
-
-        temp->next = nullptr;
-        delete temp->next;
-        temp->next = nullptr;
-
-        delete temp->prev;
-        temp->prev = nullptr;
-        delete temp;
-        temp = nullptr;
-
-        return returnData;
+        assert(head->next != nullptr);
+        head = head->next;
+        head->prev = nullptr;
     }
+
+    temp->next = nullptr;
+    temp->prev = nullptr;
+
+    delete temp->next;
+    delete temp->prev;
+    
+    temp->prev = nullptr;
+    temp->next = nullptr;
+
+    delete temp;
+    temp = nullptr;
+
+    return returnData;
 }
 
 template <typename T>
 inline void Deque<T>::clear()
 {
-    while (head != nullptr)
+    while (!is_empty())
     {
         pop_back();
     }
@@ -344,13 +347,13 @@ inline T &Deque<T>::operator=(T &&rval)
 template <typename T>
 inline void Deque<T>::erase(int i)
 {
-    if (i >= size()) {
+    if (i >= size() || i < 0) {
         throw OutOfBounds();
     }
 
-    if (head == nullptr)
+    if (is_empty())
     {
-        return;
+        throw OutOfBounds();
     }
 
     node *currentNode = head;
