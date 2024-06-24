@@ -375,6 +375,15 @@ inline void Deque<T>::erase(int i)
         nextNode->prev = prevNode;
     }
 
+    if (currentNode == tail) {
+        tail = prevNode;
+    }
+
+    if (currentNode == head)
+    {
+        head = nextNode;
+    }
+
     nextNode = nullptr;
     prevNode = nullptr;
     delete nextNode;
