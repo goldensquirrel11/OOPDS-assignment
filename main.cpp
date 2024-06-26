@@ -25,7 +25,6 @@ int main()
 
     while (game.isValidState()) {
         game.nextTurn();
-        game.updateInterface();
     }
 
     cout << "\nGAME OVER!\n";

@@ -148,8 +148,6 @@ inline Game::Game(ifstream &configFile)
     }
     
     interfaceTemplate.open("interface.template");
-
-    updateInterface();
 }
 
 inline void Game::nextTurn()
@@ -166,6 +164,8 @@ inline void Game::nextTurn()
         Robot::robotDeque.push_back(Robot::robotDeque.pop_front());
     }
     
+    updateInterface();
+
     turn++;
 }
 
@@ -228,7 +228,7 @@ inline void Game::updateInterface()
 /// @return true if the game state is valid, false otherwise
 inline bool Game::isValidState() const
 {
-    if (Robot::robotDeque.size() <= 1 || turn >= turnLimit) {
+    if (Robot::robotDeque.size() <= 1 || turn > turnLimit) {
         return false;
     }
 
