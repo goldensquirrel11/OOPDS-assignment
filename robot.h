@@ -426,22 +426,101 @@ inline void Terminator::evolve()
     // TODO: Terminator Evolve
 }
 
-// class TerminatorRoboCop : public LookingRobot, public MovingRobot, public TramplingRobot, public FiringRobot
-// {
-// private:
-//     /* data */
-// public:
-//     TerminatorRoboCop(/* args */);
-//     ~TerminatorRoboCop();
-// };
+class TerminatorRoboCop : public LookingRobot, public MovingRobot, public TramplingRobot, public FiringRobot
+{
+public:
+    TerminatorRoboCop(string name, int posX, int posY) : Robot(name, posX, posY)
+    {
+        setType("TerminatorRoboCop");
+    };
 
-// TerminatorRoboCop::TerminatorRoboCop(/* args */)
-// {
-// }
+    void executeTurn();
+    void evolve();
+};
 
-// TerminatorRoboCop::~TerminatorRoboCop()
-// {
-// }
+inline void TerminatorRoboCop::executeTurn()
+{
+    Deque<Cell> scannedCells;
+    int enemyIndex = -1; // Index of found enemy position
+
+    // Looking at all adjacent cells
+    for (int i = -1; i <= 1; i++)
+    {
+        for (int j = -1; j <= 1; j++)
+        {
+            if (i == 0 && j == 0)
+                continue;
+
+            scannedCells.push_back(Cell());
+
+            scannedCells.back() = look(i, j);
+
+            if (!scannedCells.back().isValid)
+            {
+                scannedCells.pop_back();
+                continue;
+            }
+
+            if (scannedCells.back().occupant != nullptr)
+            {
+                enemyIndex = scannedCells.size() - 1;
+            }
+        }
+    }
+
+    // If an enemy is found, move to enemy position
+    if (enemyIndex != -1)
+    {
+        move(scannedCells[enemyIndex].relativeX, scannedCells[enemyIndex].relativeY);
+        trample();
+    }
+    // If no enemy is found, move to a random cell if any are valid
+    else
+    {
+        if (scannedCells.size() != 0)
+        {
+            int cellIndex = RNG::integer(0, scannedCells.size() - 1);
+
+            move(scannedCells[cellIndex].relativeX, scannedCells[cellIndex].relativeY);
+        }
+    }
+
+    // Fire 3 times at random positions
+    int shotsLeft = 3;
+    while (shotsLeft > 0)
+    {
+        int offset = getFireRange();
+
+        int relativeX = RNG::integer(-offset, offset);
+
+        offset = offset - abs(relativeX);
+
+        int relativeY = RNG::integer(-offset, offset);
+
+        try
+        {
+            fire(relativeX, relativeY);
+        }
+        catch (FiringRobot::AttemptToShootSelf)
+        {
+            continue;
+        }
+        catch (Robot::PositionOutsideOfBoard)
+        {
+            continue;
+        }
+
+        shotsLeft--;
+    }
+
+    setNextTurn(getNextTurn() + 1);
+}
+
+inline void TerminatorRoboCop::evolve()
+{
+    // TODO: TerminatorRoboCop Evolve
+}
+
 
 // class UltimateRobot : public LookingRobot, public MovingRobot, public TramplingRobot, public FiringRobot
 // {
