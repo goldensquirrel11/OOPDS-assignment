@@ -36,6 +36,7 @@ inline bool TramplingRobot::canTrample() const
     return true;
 }
 
+/// @brief A datatype that holds information about a specified cell in the game board
 class Cell
 {
 public:
@@ -256,11 +257,13 @@ inline bool MovingRobot::move(int relativeX, int relativeY)
         throw PositionOutsideOfBoard();
     }
 
-    for (int i = 0; i < Robot::robotDeque.size(); i++)
-    {
-        if (Robot::robotDeque[i]->getPositionX() == positionX && Robot::robotDeque[i]->getPositionY() == positionY)
+    if (this->canTrample() == false) {
+        for (int i = 0; i < Robot::robotDeque.size(); i++)
         {
-            return false;
+            if (Robot::robotDeque[i]->getPositionX() == positionX && Robot::robotDeque[i]->getPositionY() == positionY)
+            {
+                return false;
+            }
         }
     }
 
@@ -358,22 +361,70 @@ inline void RoboCop::evolve()
     // TODO: RoboCop Evolve
 }
 
-// class Terminator : public LookingRobot, public MovingRobot, public TramplingRobot
-// {
-// private:
-//     /* data */
-// public:
-//     Terminator(/* args */);
-//     ~Terminator();
-// };
 
-// Terminator::Terminator(/* args */)
-// {
-// }
+class Terminator : public LookingRobot, public MovingRobot, public TramplingRobot
+{
+public:
+    Terminator(string name, int posX, int posY) : Robot(name, posX, posY)
+    {
+        setType("Terminator");
+    };
 
-// Terminator::~Terminator()
-// {
-// }
+    void executeTurn();
+    void evolve();
+};
+
+inline void Terminator::executeTurn()
+{
+    Deque<Cell> scannedCells;
+    int enemyIndex = -1; // Index of found enemy position
+
+    // Looking at all adjacent cells
+    for (int i = -1; i <= 1; i++)
+    {
+        for (int j = -1; j <= 1; j++)
+        {
+            if (i == 0 && j == 0)
+                continue;
+
+            scannedCells.push_back(Cell());
+
+            scannedCells.back() = look(i, j);
+
+            if (!scannedCells.back().isValid)
+            {
+                scannedCells.pop_back();
+                continue;
+            }
+
+            if (scannedCells.back().occupant != nullptr) {
+                enemyIndex = scannedCells.size() - 1;
+            }
+        }
+    }
+
+    // If an enemy is found, move to enemy position
+    if (enemyIndex != -1) {
+        move(scannedCells[enemyIndex].relativeX, scannedCells[enemyIndex].relativeY);
+        trample();
+    }
+    // If no enemy is found, move to a random cell if any are valid
+    else {
+        if (scannedCells.size() != 0)
+        {
+            int cellIndex = RNG::integer(0, scannedCells.size() - 1);
+
+            move(scannedCells[cellIndex].relativeX, scannedCells[cellIndex].relativeY);
+        }
+    }
+    
+    setNextTurn(getNextTurn() + 1);
+}
+
+inline void Terminator::evolve()
+{
+    // TODO: Terminator Evolve
+}
 
 // class TerminatorRoboCop : public LookingRobot, public MovingRobot, public TramplingRobot, public FiringRobot
 // {

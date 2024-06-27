@@ -96,7 +96,7 @@ inline void Game::readConfigFile(ifstream &configFile)
         }
         else if (robotType == "Terminator")
         {
-            // TODO: push back into robotDeque
+            Robot::robotDeque.push_back(new Terminator(robotName, posX, posY));
         }
         else if (robotType == "TerminatorRoboCop")
         {
