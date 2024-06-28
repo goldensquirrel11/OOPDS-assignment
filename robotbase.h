@@ -177,21 +177,19 @@ inline void Robot::kill(Robot *robotToKill)
 {
     robotToKill->minusOneLife();
     this->addKill(1);
-    int i = 0;
+    int IndexOfRobotToKill = 0;
+
+    while (Robot::robotDeque[IndexOfRobotToKill] != robotToKill)
+    {
+        IndexOfRobotToKill++;
+    }
 
     if (robotToKill->getLives() > 0)
     {
-        for (; i < Robot::robotDeque.size(); i++)
-        {
-            if (Robot::robotDeque[i] == robotToKill)
-            {
-                Robot::reviveDeque.push_back(robotToKill);
-                break;
-            }
-        }
+        Robot::reviveDeque.push_back(robotToKill);
     }
 
-    Robot::robotDeque.erase(i);
+    Robot::robotDeque.erase(IndexOfRobotToKill);
 }
 
 #endif
