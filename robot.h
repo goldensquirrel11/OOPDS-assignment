@@ -210,11 +210,15 @@ inline void FiringRobot::fire(int relativeX, int relativeY)
     }
 }
 
+/// @param fireRange if the fireRange >= 0 : indicates the fire range value
+/// @param fireRange if the fireRange == -1 : indicates an unlimited fire range value
 inline int FiringRobot::getFireRange() const
 {
     return this->fireRange;
 }
 
+/// @param fireRange if the fireRange >= 0 : indicates the fire range value
+/// @param fireRange if the fireRange == -1 : indicates an unlimited fire range value
 inline void FiringRobot::setFireRange(int fireRange)
 {
     this->fireRange = fireRange;
@@ -522,22 +526,84 @@ inline void TerminatorRoboCop::evolve()
 }
 
 
-// class UltimateRobot : public LookingRobot, public MovingRobot, public TramplingRobot, public FiringRobot
-// {
-// private:
-//     /* data */
-// public:
-//     UltimateRobot(/* args */);
-//     ~UltimateRobot();
-// };
+class UltimateRobot : public LookingRobot, public MovingRobot, public TramplingRobot, public FiringRobot
+{
+public:
+    UltimateRobot(string name, int posX, int posY) : Robot(name, posX, posY)
+    {
+        setType("UltimateRobot");
+        setFireRange(-1);
+    };
 
-// UltimateRobot::UltimateRobot(/* args */)
-// {
-// }
+    void executeTurn();
+    void evolve();
+};
 
-// UltimateRobot::~UltimateRobot()
-// {
-// }
+inline void UltimateRobot::executeTurn()
+{
+    Deque<Cell> scannedCells;
+
+    // Looking at all adjacent cells
+    for (int i = -1; i <= 1; i++)
+    {
+        for (int j = -1; j <= 1; j++)
+        {
+            if (i == 0 && j == 0)
+                continue;
+
+            scannedCells.push_back(Cell());
+
+            scannedCells.back() = look(i, j);
+
+            if (!scannedCells.back().isValid)
+            {
+                scannedCells.pop_back();
+                continue;
+            }
+        }
+    }
+
+    // Moving to a random cell if any are valid
+    if (scannedCells.size() != 0)
+    {
+        int cellIndex = RNG::integer(0, scannedCells.size() - 1);
+
+        move(scannedCells[cellIndex].relativeX, scannedCells[cellIndex].relativeY);
+
+        trample(); // tramples any robot that is occupying the same position
+    }
+
+    // Fire 3 times at random positions
+    int shotsLeft = 3;
+    while (shotsLeft > 0)
+    {
+        int relativeX = RNG::posX();
+        int relativeY = RNG::posY();
+
+        try
+        {
+            fire(relativeX, relativeY);
+        }
+        catch (FiringRobot::AttemptToShootSelf)
+        {
+            continue;
+        }
+        catch (Robot::PositionOutsideOfBoard)
+        {
+            continue;
+        }
+
+        shotsLeft--;
+    }
+
+    setNextTurn(getNextTurn() + 1);
+}
+
+/// @brief UltimateRobot does not evolve into anything so this function will not do anything
+inline void UltimateRobot::evolve()
+{
+    return;
+}
 
 // class BlueThunder : public FiringRobot
 // {

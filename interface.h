@@ -117,7 +117,7 @@ inline void Game::readConfigFile(ifstream &configFile)
         }
         else if (robotType == "UltimateRobot")
         {
-            // TODO: push back into robotDeque
+            Robot::robotDeque.push_back(new UltimateRobot(robotName, posX, posY));
         }
         else
         {
