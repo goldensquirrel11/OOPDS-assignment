@@ -16,6 +16,7 @@ private:
     static const string FIRE;
     static const string FIRE_HIT;
     static const string EVOLVE;
+    static const string REVIVE;
 
     static void inputAtNextPosition(istringstream &inputStream, string input);
     static void inputAtNextPosition(istringstream &inputStream, int input);
@@ -31,6 +32,7 @@ public:
     static void fire(string robotName, int posX, int posY);
     static void fireHit(string robotName, string enemyRobot);
     static void evolve(string robotName, string robotType);
+    static void revive(string robotName, int posX, int posY);
 };
 
 string Log::logBuffer = "";
@@ -40,6 +42,7 @@ const string Log::TRAMPLE = "${robotName} trampled ${trampledRobot}";
 const string Log::FIRE = "${robotName} fires at ${posX}, ${posY}";
 const string Log::FIRE_HIT = "${robotName} shot ${shotRobot}";
 const string Log::EVOLVE = "${robotName} evolved into a ${robotType}";
+const string Log::REVIVE = "${robotName} was revived and spawned at ${posX}, ${posY}";
 
 /// @brief reads input from istringstream object until the next input position and appends to the log buffer, then appends the input string to the log buffer
 /// @param inputStream istringstream object of the log template string
@@ -149,5 +152,18 @@ inline void Log::evolve(string robotName, string robotType)
 
     logBuffer += '\n';
 }
+
+inline void Log::revive(string robotName, int posX, int posY)
+{
+    istringstream logTemplate(REVIVE);
+    string temp;
+
+    inputAtNextPosition(logTemplate, robotName);
+    inputAtNextPosition(logTemplate, posX);
+    inputAtNextPosition(logTemplate, posY);
+
+    logBuffer += '\n';
+}
+
 
 #endif
