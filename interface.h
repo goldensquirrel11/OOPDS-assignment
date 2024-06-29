@@ -36,6 +36,7 @@ public:
 
     void nextTurn();
     void updateInterface();
+    void revive();
 
     bool isValidState() const;
 };
@@ -86,37 +87,35 @@ inline void Game::readConfigFile(ifstream &configFile)
             posY = RNG::posY();
         else
             posY = stoi(input);
-
-
-
-        // TODO: Complete this if-else-if block when all robot classes have been defined
+        
+        
         if (robotType == "RoboCop")
         {
             Robot::robotDeque.push_back(new RoboCop(robotName, posX, posY));
         }
         else if (robotType == "Terminator")
         {
-            // TODO: push back into robotDeque
+            Robot::robotDeque.push_back(new Terminator(robotName, posX, posY));
         }
         else if (robotType == "TerminatorRoboCop")
         {
-            // TODO: push back into robotDeque
+            Robot::robotDeque.push_back(new TerminatorRoboCop(robotName, posX, posY));
         }
         else if (robotType == "BlueThunder")
         {
-            // TODO: push back into robotDeque
+            Robot::robotDeque.push_back(new BlueThunder(robotName, posX, posY));
         }
         else if (robotType == "Madbot")
         {
-            // TODO: push back into robotDeque
+            Robot::robotDeque.push_back(new Madbot(robotName, posX, posY));
         }
         else if (robotType == "RoboTank")
         {
-            // TODO: push back into robotDeque
+            Robot::robotDeque.push_back(new RoboTank(robotName, posX, posY));
         }
         else if (robotType == "UltimateRobot")
         {
-            // TODO: push back into robotDeque
+            Robot::robotDeque.push_back(new UltimateRobot(robotName, posX, posY));
         }
         else
         {
@@ -152,11 +151,11 @@ inline Game::Game(ifstream &configFile)
 
 inline void Game::nextTurn()
 {
-    // TODO: Design this function
-    // - added turn counter in robot instances
-    // NOTE: incrementing robot object turn counter is the responsibility of every individual robot object
+    // Checking for any robots queued for a revive
+    if (Robot::reviveDeque.size() > 0) {
+        revive();
+    }
 
-    // TODO: Check for robots that need a revive
 
     while (Robot::robotDeque.front()->getNextTurn() == turn)
     {
@@ -218,6 +217,55 @@ inline void Game::updateInterface()
     interfaceTemplate.seekg(0, interfaceTemplate.beg);
 
     actionLog.resetLog();
+}
+
+/// @brief Revives a robot and places it in a random position on the field
+inline void Game::revive()
+{
+    Robot::reviveDeque.front()->setNextTurn(turn);
+
+    int robotCount = Robot::robotDeque.size();
+    
+    
+    // listing all invalid board positions in arrays for easy access
+    int invalidXPositions[robotCount];
+    int invalidYPositions[robotCount];
+
+    for (int i=0; i < robotCount; i++) {
+        invalidXPositions[i] = Robot::robotDeque[i]->getPositionX();
+        invalidYPositions[i] = Robot::robotDeque[i]->getPositionY();
+    }
+
+
+    // Generating a valid revive position
+    bool isValidRevivePosition = false;
+    int reviveXPosition;
+    int reviveYPosition;
+
+    while (!isValidRevivePosition)
+    {
+        reviveXPosition = RNG::posX();
+        reviveYPosition = RNG::posY();
+
+        isValidRevivePosition = true;
+
+        // checking if the generated position matches any of the invalid positions
+        for (int i=0; i < robotCount; i++) {
+            if (reviveXPosition == invalidXPositions[i] && reviveYPosition == invalidYPositions[i]) {
+                isValidRevivePosition = false;
+                break;
+            }
+        }
+    }
+
+
+    // setting the revive position
+    Robot::reviveDeque.front()->updatePositionX(reviveXPosition);
+    Robot::reviveDeque.front()->updatePositionY(reviveYPosition);
+
+    Robot::robotDeque.push_back(Robot::reviveDeque.pop_front());
+
+    Log::revive(Robot::robotDeque.back()->getName(), reviveXPosition, reviveYPosition);
 }
 
 /// @brief Determines whether the current game state is valid
