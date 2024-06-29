@@ -777,11 +777,19 @@ inline void BlueThunder::executeTurn()
     }
 
     setNextTurn(getNextTurn() + 1);
+
+    if (getReadyToEvolveState() == true)
+    {
+        evolve();
+    }
 }
 
 inline void BlueThunder::evolve()
 {
-    // TODO: BlueThunder Evolve
+    robotDeque.pop_front();
+    robotDeque.push_front(new Madbot(getName(), getPositionX(), getPositionY()));
+    robotDeque.front()->setNextTurn(getNextTurn());
+    Log::evolve(getName(), "Madbot");
 }
 
 
