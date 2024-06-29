@@ -41,7 +41,7 @@ const string Log::MOVE = "${robotName} moved to ${posX}, ${posY}";
 const string Log::TRAMPLE = "${robotName} trampled ${trampledRobot}";
 const string Log::FIRE = "${robotName} fires at ${posX}, ${posY}";
 const string Log::FIRE_HIT = "${robotName} shot ${shotRobot}";
-const string Log::EVOLVE = "${robotName} evolved into a ${robotType}";
+const string Log::EVOLVE = "${robotName} evolved into ${robotType}";
 const string Log::REVIVE = "${robotName} was revived and spawned at ${posX}, ${posY}";
 
 /// @brief reads input from istringstream object until the next input position and appends to the log buffer, then appends the input string to the log buffer
