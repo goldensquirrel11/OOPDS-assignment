@@ -672,11 +672,19 @@ inline void RoboTank::executeTurn()
     }
 
     setNextTurn(getNextTurn() + 1);
+
+    if (getReadyToEvolveState() == true)
+    {
+        evolve();
+    }
 }
 
 inline void RoboTank::evolve()
 {
-    // TODO: BlueThunder Evolve
+    robotDeque.pop_front();
+    robotDeque.push_front(new UltimateRobot(getName(), getPositionX(), getPositionY()));
+    robotDeque.front()->setNextTurn(getNextTurn());
+    Log::evolve(getName(), "UltimateRobot");
 }
 
 class Madbot : public FiringRobot
