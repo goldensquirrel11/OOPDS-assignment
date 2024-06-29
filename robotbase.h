@@ -16,6 +16,7 @@ private:
     int killsToNextEvolve = 3;
     int posX = 0;
     int posY = 0;
+    bool isReadyToEvolve = false;
 
     // Exception for when lives is decremented past 0
     class NoLivesLeft
@@ -51,6 +52,7 @@ public:
     virtual int getFireRange() const;
     virtual int getMoveRange() const;
     virtual bool canTrample() const;
+    bool getReadyToEvolveState() const;
 
     // Modifiers
 
@@ -60,6 +62,7 @@ public:
     void updatePositionY(int newPosY);
     void minusOneLife();
     void addKill(int killsToAdd);
+    void setReadyToEvolve();
 
     virtual void kill(Robot *robotToKill);
     virtual void executeTurn() = 0;
@@ -131,6 +134,11 @@ inline bool Robot::canTrample() const
     return false;
 }
 
+inline bool Robot::getReadyToEvolveState() const
+{
+    return isReadyToEvolve;
+}
+
 inline void Robot::setType(string type)
 {
     this->type = type;
@@ -169,8 +177,14 @@ inline void Robot::addKill(int killsToAdd)
     if (killsToNextEvolve <= 0)
     {
         killsToNextEvolve += 3;
-        evolve();
+        setReadyToEvolve();
     }
+}
+
+/// @brief Sets the isReadyToEvolve flag to true
+inline void Robot::setReadyToEvolve()
+{
+    isReadyToEvolve = true;
 }
 
 inline void Robot::kill(Robot *robotToKill)
