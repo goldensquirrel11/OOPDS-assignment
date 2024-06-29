@@ -149,6 +149,7 @@ inline void Log::evolve(string robotName, string robotType)
     string temp;
 
     inputAtNextPosition(logTemplate, robotName);
+    inputAtNextPosition(logTemplate, robotType);
 
     logBuffer += '\n';
 }
