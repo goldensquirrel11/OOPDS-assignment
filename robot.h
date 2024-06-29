@@ -332,7 +332,7 @@ inline void UltimateRobot::executeTurn()
         trample(); // tramples any robot that is occupying the same position
     }
 
-    // Fire 3 times at random positions
+    // Fire 3 times at random positions on the board
     int shotsLeft = 3;
     while (shotsLeft > 0)
     {
@@ -454,11 +454,19 @@ inline void TerminatorRoboCop::executeTurn()
     }
 
     setNextTurn(getNextTurn() + 1);
+
+    if (getReadyToEvolveState() == true)
+    {
+        evolve();
+    }
 }
 
 inline void TerminatorRoboCop::evolve()
 {
-    // TODO: TerminatorRoboCop Evolve
+    robotDeque.pop_front();
+    robotDeque.push_front(new UltimateRobot(getName(), getPositionX(), getPositionY()));
+    robotDeque.front()->setNextTurn(getNextTurn());
+    Log::evolve(getName(), "UltimateRobot");
 }
 
 class Terminator : public LookingRobot, public MovingRobot, public TramplingRobot
