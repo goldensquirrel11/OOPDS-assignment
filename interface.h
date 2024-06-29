@@ -87,10 +87,8 @@ inline void Game::readConfigFile(ifstream &configFile)
             posY = RNG::posY();
         else
             posY = stoi(input);
-
-
-
-        // TODO: Complete this if-else-if block when all robot classes have been defined
+        
+        
         if (robotType == "RoboCop")
         {
             Robot::robotDeque.push_back(new RoboCop(robotName, posX, posY));
@@ -113,7 +111,7 @@ inline void Game::readConfigFile(ifstream &configFile)
         }
         else if (robotType == "RoboTank")
         {
-            // TODO: push back into robotDeque
+            Robot::robotDeque.push_back(new RoboTank(robotName, posX, posY));
         }
         else if (robotType == "UltimateRobot")
         {
