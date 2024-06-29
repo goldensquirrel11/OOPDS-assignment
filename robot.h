@@ -371,6 +371,7 @@ public:
     TerminatorRoboCop(string name, int posX, int posY) : Robot(name, posX, posY)
     {
         setType("TerminatorRoboCop");
+        setFireRange(10);
     };
 
     void executeTurn();
