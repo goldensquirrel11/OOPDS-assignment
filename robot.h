@@ -577,9 +577,8 @@ inline void UltimateRobot::executeTurn()
     int shotsLeft = 3;
     while (shotsLeft > 0)
     {
-        // TODO: Rewrite this to generate positions relative to UltimateRobot
-        int relativeX = RNG::posX();
-        int relativeY = RNG::posY();
+        int relativeX = RNG::integer(-getPositionX(), Board::getWidth() - getPositionX() - 1);
+        int relativeY = RNG::integer(-getPositionY(), Board::getHeight() - getPositionY() - 1);
 
         try
         {
