@@ -105,7 +105,7 @@ inline void Game::readConfigFile(ifstream &configFile)
         }
         else if (robotType == "BlueThunder")
         {
-            // TODO: push back into robotDeque
+            Robot::robotDeque.push_back(new BlueThunder(robotName, posX, posY));
         }
         else if (robotType == "Madbot")
         {

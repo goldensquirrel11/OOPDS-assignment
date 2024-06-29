@@ -577,6 +577,7 @@ inline void UltimateRobot::executeTurn()
     int shotsLeft = 3;
     while (shotsLeft > 0)
     {
+        // TODO: Rewrite this to generate positions relative to UltimateRobot
         int relativeX = RNG::posX();
         int relativeY = RNG::posY();
 
@@ -605,22 +606,65 @@ inline void UltimateRobot::evolve()
     return;
 }
 
-// class BlueThunder : public FiringRobot
-// {
-// private:
-//     /* data */
-// public:
-//     BlueThunder(/* args */);
-//     ~BlueThunder();
-// };
 
-// BlueThunder::BlueThunder(/* args */)
-// {
-// }
+class BlueThunder : public FiringRobot
+{
+private:
+    int firePositionX = 0;
+    int firePositionY = -1;
 
-// BlueThunder::~BlueThunder()
-// {
-// }
+    void setNextFirePosition();
+
+public:
+    BlueThunder(string name, int posX, int posY) : Robot(name, posX, posY)
+    {
+        setType("BlueThunder");
+        setFireRange(1);
+    };
+
+    void executeTurn();
+    void evolve();
+};
+
+inline void BlueThunder::setNextFirePosition()
+{
+    if (firePositionX != 1 && firePositionY == -1)
+        firePositionX++;
+    else if (firePositionX == 1 && firePositionY != 1)
+        firePositionY++;
+    else if (firePositionX != -1 && firePositionY == 1)
+        firePositionX--;
+    else
+        firePositionY--;
+}
+
+inline void BlueThunder::executeTurn()
+{
+    // Fires at the next valid position in a clockwise fashion
+    bool hasShot = false;
+    while (!hasShot)
+    {
+        try
+        {
+            fire(firePositionX, firePositionY);
+        }
+        catch (Robot::PositionOutsideOfBoard)
+        {
+            setNextFirePosition();
+            continue;
+        }
+
+        hasShot = true;
+        setNextFirePosition();
+    }
+
+    setNextTurn(getNextTurn() + 1);
+}
+
+inline void BlueThunder::evolve()
+{
+    // TODO: BlueThunder Evolve
+}
 
 // class Madbot : public FiringRobot
 // {
