@@ -284,87 +284,6 @@ inline int MovingRobot::getMoveRange() const
     return this->moveRange;
 }
 
-class RoboCop : public LookingRobot, public MovingRobot, public FiringRobot
-{
-public:
-    RoboCop(string name, int posX, int posY) : Robot(name, posX, posY)
-    {
-        setType("RoboCop");
-        setFireRange(10);
-    };
-
-    void executeTurn();
-    void evolve();
-};
-
-inline void RoboCop::executeTurn()
-{
-    Deque<Cell> scannedCells;
-
-    // Looking at all adjacent cells
-    for (int i = -1; i <= 1; i++)
-    {
-        for (int j = -1; j <= 1; j++)
-        {
-            if (i == 0 && j == 0)
-                continue;
-
-            scannedCells.push_back(Cell());
-
-            scannedCells.back() = look(i, j);
-
-            if (!scannedCells.back().isValid || scannedCells.back().occupant != nullptr)
-            {
-                scannedCells.pop_back();
-                continue;
-            }
-        }
-    }
-
-    // Moving to a random cell if any are valid
-    if (scannedCells.size() != 0)
-    {
-        int cellIndex = RNG::integer(0, scannedCells.size() - 1);
-
-        move(scannedCells[cellIndex].relativeX, scannedCells[cellIndex].relativeY);
-    }
-
-    // Fire 3 times at random positions
-    int shotsLeft = 3;
-    while (shotsLeft > 0)
-    {
-        int offset = getFireRange();
-
-        int relativeX = RNG::integer(-offset, offset);
-
-        offset = offset - abs(relativeX);
-
-        int relativeY = RNG::integer(-offset, offset);
-
-        try
-        {
-            fire(relativeX, relativeY);
-        }
-        catch (FiringRobot::AttemptToShootSelf)
-        {
-            continue;
-        }
-        catch (Robot::PositionOutsideOfBoard)
-        {
-            continue;
-        }
-
-        shotsLeft--;
-    }
-
-    setNextTurn(getNextTurn() + 1);
-}
-
-inline void RoboCop::evolve()
-{
-    // TODO: RoboCop Evolve
-}
-
 
 class Terminator : public LookingRobot, public MovingRobot, public TramplingRobot
 {
@@ -525,6 +444,95 @@ inline void TerminatorRoboCop::evolve()
     // TODO: TerminatorRoboCop Evolve
 }
 
+class RoboCop : public LookingRobot, public MovingRobot, public FiringRobot
+{
+public:
+    RoboCop(string name, int posX, int posY) : Robot(name, posX, posY)
+    {
+        setType("RoboCop");
+        setFireRange(10);
+    };
+
+    void executeTurn();
+    void evolve();
+};
+
+inline void RoboCop::executeTurn()
+{
+    Deque<Cell> scannedCells;
+
+    // Looking at all adjacent cells
+    for (int i = -1; i <= 1; i++)
+    {
+        for (int j = -1; j <= 1; j++)
+        {
+            if (i == 0 && j == 0)
+                continue;
+
+            scannedCells.push_back(Cell());
+
+            scannedCells.back() = look(i, j);
+
+            if (!scannedCells.back().isValid || scannedCells.back().occupant != nullptr)
+            {
+                scannedCells.pop_back();
+                continue;
+            }
+        }
+    }
+
+    // Moving to a random cell if any are valid
+    if (scannedCells.size() != 0)
+    {
+        int cellIndex = RNG::integer(0, scannedCells.size() - 1);
+
+        move(scannedCells[cellIndex].relativeX, scannedCells[cellIndex].relativeY);
+    }
+
+    // Fire 3 times at random positions
+    int shotsLeft = 3;
+    while (shotsLeft > 0)
+    {
+        int offset = getFireRange();
+
+        int relativeX = RNG::integer(-offset, offset);
+
+        offset = offset - abs(relativeX);
+
+        int relativeY = RNG::integer(-offset, offset);
+
+        try
+        {
+            fire(relativeX, relativeY);
+        }
+        catch (FiringRobot::AttemptToShootSelf)
+        {
+            continue;
+        }
+        catch (Robot::PositionOutsideOfBoard)
+        {
+            continue;
+        }
+
+        shotsLeft--;
+    }
+
+    setNextTurn(getNextTurn() + 1);
+
+    if (getReadyToEvolveState() == true)
+    {
+        evolve();
+    }
+}
+
+/// @brief Evolves this RoboCop into a TerminatorRoboCop
+inline void RoboCop::evolve()
+{
+    robotDeque.pop_front();
+    robotDeque.push_front(new TerminatorRoboCop(getName(), getPositionX(), getPositionY()));
+    robotDeque.front()->setNextTurn(getNextTurn());
+    Log::evolve(getName(), "TerminatorRoboCop");
+}
 
 class UltimateRobot : public LookingRobot, public MovingRobot, public TramplingRobot, public FiringRobot
 {
