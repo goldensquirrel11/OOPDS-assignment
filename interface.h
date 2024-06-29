@@ -109,7 +109,7 @@ inline void Game::readConfigFile(ifstream &configFile)
         }
         else if (robotType == "Madbot")
         {
-            // TODO: push back into robotDeque
+            Robot::robotDeque.push_back(new Madbot(robotName, posX, posY));
         }
         else if (robotType == "RoboTank")
         {

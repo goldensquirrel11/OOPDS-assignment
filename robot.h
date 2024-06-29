@@ -666,22 +666,52 @@ inline void BlueThunder::evolve()
     // TODO: BlueThunder Evolve
 }
 
-// class Madbot : public FiringRobot
-// {
-// private:
-//     /* data */
-// public:
-//     Madbot(/* args */);
-//     ~Madbot();
-// };
 
-// Madbot::Madbot(/* args */)
-// {
-// }
+class Madbot : public FiringRobot
+{
+public:
+    Madbot(string name, int posX, int posY) : Robot(name, posX, posY)
+    {
+        setType("Madbot");
+        setFireRange(1);
+    };
 
-// Madbot::~Madbot()
-// {
-// }
+    void executeTurn();
+    void evolve();
+};
+
+inline void Madbot::executeTurn()
+{
+    // Fire at a random valid adjacent position
+    bool hasShot = false;
+    while (!hasShot)
+    {
+        int relativeX = RNG::integer(-1, 1);
+        int relativeY = RNG::integer(-1, 1);
+
+        try
+        {
+            fire(relativeX, relativeY);
+        }
+        catch (FiringRobot::AttemptToShootSelf)
+        {
+            continue;
+        }
+        catch (Robot::PositionOutsideOfBoard)
+        {
+            continue;
+        }
+
+        hasShot = true;
+    }
+
+    setNextTurn(getNextTurn() + 1);
+}
+
+inline void Madbot::evolve()
+{
+    // TODO: Madbot Evolve
+}
 
 // class RoboTank : public FiringRobot
 // {
