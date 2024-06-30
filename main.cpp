@@ -38,6 +38,8 @@ int main()
     // main game loop
     while (game.isValidState()) {
         game.nextTurn();
+        cout << "Press enter to continue..." << endl;
+        cin.get();
     }
 
     cout << "\nGAME OVER!\n";
