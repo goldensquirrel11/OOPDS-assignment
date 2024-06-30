@@ -1,8 +1,6 @@
 #ifndef DEQUE_H
 #define DEQUE_H
 
-#include <cassert>
-
 // Generic double-ended queue class
 template <typename T>
 class Deque
@@ -119,12 +117,10 @@ inline bool Deque<T>::is_empty()
 {
     if (head == nullptr)
     {
-        assert(tail == nullptr);
         return true;
     }
     else
     {
-        assert(tail != nullptr);
         return false;
     }
 }
@@ -275,7 +271,6 @@ inline T Deque<T>::pop_front()
     }
     else
     {
-        assert(head->next != nullptr);
         head = head->next;
         head->prev = nullptr;
     }
