@@ -1,3 +1,17 @@
+/*
+ *
+ * This file contains the Board class that is responsible for generating the
+ * board displayed on every turn
+ *
+ * --- Code Summary ---
+ * The code iterates through robotDeque to and stores all robots' first letter
+ * in their name, X position & Y position in an array for fast lookups.
+ *
+ * Then, as the board is being generated, these arrays are referenced to check
+ * whether robots are located in a particular position on the board
+ *
+ */
+
 #ifndef BOARD_H
 #define BOARD_H
 
@@ -7,10 +21,10 @@
 
 using namespace std;
 
-/// @brief
-/// @param character
-/// @param numberOfTimes
-/// @return a string containing of repeated character the indicated number of times
+/// @brief returns a string containing a repeated character
+/// @param character the char to repeat
+/// @param numberOfTimes the number of times to repeat the character
+/// @return a string containing the repeated character
 string repeatChar(const char character, const int numberOfTimes)
 {
     string temp = "";
@@ -29,21 +43,34 @@ private:
     static int height;
     string boardBuffer = "";
 
-    // Characters used in the board
+
+    /*---------------------------------------------*/
+    /*              Board Characters               */
+    /*---------------------------------------------*/
+
     char EMPTY_SPACE = ' ';
     char CORNER = '+';
     char HORIZONTAL_BAR = '-';
     char VERTICAL_BAR = '|';
 
+
 public:
-    // Accessors
+    /*---------------------------------------------*/
+    /*                 Accessors                   */
+    /*---------------------------------------------*/
+
     static int getWidth();
     static int getHeight();
     string getBoard() const;
 
-    // Modifiers
+    /*---------------------------------------------*/
+    /*                 Modifiers                   */
+    /*---------------------------------------------*/
+
     void setWidth(int width);
     void setHeight(int height);
+
+    /// @brief refreshes the boardBuffer with the board containing the latest robot positions
     void refresh();
 };
 
@@ -77,8 +104,10 @@ inline void Board::setHeight(int height)
 
 inline void Board::refresh(/* pass in robot Queue */)
 {
+    // clear the boardBuffer
     boardBuffer = "";
-
+    
+    // append the top border of the board
     boardBuffer += CORNER;
     boardBuffer += repeatChar(HORIZONTAL_BAR, width);
     boardBuffer += CORNER;
@@ -86,6 +115,8 @@ inline void Board::refresh(/* pass in robot Queue */)
 
     int robotCount = Robot::robotDeque.size();
 
+    /// @brief datatype for storing a robot's first letter char,
+    /// X coordinate & Y coordinate
     struct Info
     {
         char firstChar;
@@ -93,8 +124,8 @@ inline void Board::refresh(/* pass in robot Queue */)
         int positionY;
     };
 
-    /// For the sake of speed, arrays are used here to quickly look up
-    /// the first letter of each robot name and robot position
+    // For the sake of speed, arrays are used here to quickly look up
+    // the first letter of each robot name and robot position
 
     /// @brief array of all robot's info
     Info robotInfo[robotCount];
@@ -107,6 +138,7 @@ inline void Board::refresh(/* pass in robot Queue */)
         robotInfo[i].positionY = Robot::robotDeque[i]->getPositionY();
     }
 
+    // appending the contents of the board to boardBuffer
     for (int y = 0; y < height; y++)
     {
         boardBuffer += VERTICAL_BAR;
@@ -114,7 +146,8 @@ inline void Board::refresh(/* pass in robot Queue */)
         for (int x = 0; x < width; x++)
         {
             for (int k = 0; k < robotCount; k++)
-            {
+            { // append the robot's first letter char if the x & y position
+              // matches the robot's position
                 if (robotInfo[k].positionX == x && robotInfo[k].positionY == y)
                 {
                     boardBuffer += robotInfo[k].firstChar;
@@ -131,6 +164,7 @@ inline void Board::refresh(/* pass in robot Queue */)
         boardBuffer += '\n';
     }
 
+    // append the bottom border of the board
     boardBuffer += CORNER;
     boardBuffer += repeatChar(HORIZONTAL_BAR, width);
     boardBuffer += CORNER;

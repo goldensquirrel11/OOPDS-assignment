@@ -1,3 +1,10 @@
+/*
+ *
+ * This file contains the Game class that functions as the main controller
+ * for the game's flow
+ *
+ */
+
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
@@ -14,12 +21,25 @@ using namespace std;
 class Game
 {
 private:
+    /// @brief Current game turn
     int turn = 0;
-    Board board;
+
     int turnLimit = 0;
+    
+    /// @brief The game board
+    Board board;
+    
+    /// @brief Temporarily stores the interface as a string before
+    /// outputting to the terminal
     string displayBuffer = "";
+
+    /// @brief The file that is used to log all game output
     ofstream logFile;
+    
+    /// @brief The text file that stores a template of the interface
     ifstream interfaceTemplate;
+
+    /// @brief Stores the game logs that will be displayed on every turn
     Log actionLog;
 
     void readConfigFile(ifstream &configFile);
@@ -33,6 +53,7 @@ private:
 
 public:
     Game(ifstream &configFile);
+
 
     void nextTurn();
     void updateInterface();
@@ -65,12 +86,12 @@ inline void Game::readConfigFile(ifstream &configFile)
     getline(configFile, input);
     robotCount = stoi(input.substr(8));
 
-    // Read in each robot
     string robotType;
     string robotName;
     int posX;
     int posY;
 
+    // Read in each robot
     for (int i = robotCount; i > 0; i--)
     {
         getline(configFile, robotType, ' ');
@@ -149,6 +170,7 @@ inline Game::Game(ifstream &configFile)
     interfaceTemplate.open("interface.template");
 }
 
+/// @brief Executes the next game turn
 inline void Game::nextTurn()
 {
     // Checking for any robots queued for a revive
@@ -219,7 +241,8 @@ inline void Game::updateInterface()
     actionLog.resetLog();
 }
 
-/// @brief Revives a robot and places it in a random position on the field
+/// @brief Revives the robot in front of the reviveDeque and places it in a
+/// random position on the board
 inline void Game::revive()
 {
     Robot::reviveDeque.front()->setNextTurn(turn);

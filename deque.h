@@ -1,3 +1,21 @@
+/*
+ *
+ * This file contains the Deque (Double-ended queue) class that is used
+ * as a container for queue-like behavior
+ *
+ * --- Code Summary ---
+ * The deque is implemented using a node-linking structure with node containing
+ * pointers to the previous node & pointers to the next node. The deque also
+ * has the added ability to reference contained elements using the [] operator.
+ *
+ * --- Reasoning for creating deque instead of queue ---
+ * I had initially chose to implement a deque instead of a normal queue class
+ * because I was uncertain at time about how I would like to structure my
+ * entire program. So I thought that having the flexibility of deque might help
+ * future me make more flexible decisions about my program structure.
+ *
+ */
+
 #ifndef DEQUE_H
 #define DEQUE_H
 
@@ -33,7 +51,9 @@ public:
     Deque(const Deque &object);
     Deque(Deque &&object);
 
-    // Accessors
+    /*---------------------------------------------*/
+    /*                 Accessors                   */
+    /*---------------------------------------------*/
 
     int size();
     bool is_empty();
@@ -41,7 +61,9 @@ public:
     T &back();
     T &operator[](int i);
 
-    // Modifiers
+    /*---------------------------------------------*/
+    /*                 Modifiers                   */
+    /*---------------------------------------------*/
 
     void push_back(T data);
     void push_front(T data);
@@ -50,6 +72,7 @@ public:
     void clear();
     T &operator=(T &rval);
     T &operator=(T &&rval);
+
     void erase(int i);
 };
 
@@ -97,6 +120,8 @@ inline Deque<T>::Deque(Deque &&object)
     object.tail = nullptr;
 }
 
+/// @brief Returns the number of elements in the deque
+/// @return int detailing how many elements are in the deque
 template <typename T>
 inline int Deque<T>::size()
 {
@@ -112,6 +137,8 @@ inline int Deque<T>::size()
     return counter;
 }
 
+/// @brief checks whether the deque is empty
+/// @return true if the deque is empty, false otherwise
 template <typename T>
 inline bool Deque<T>::is_empty()
 {
@@ -125,6 +152,9 @@ inline bool Deque<T>::is_empty()
     }
 }
 
+/// @brief references the element at the front of the deque
+/// @return reference to the element at the front of the deque
+/// @exception OutOfBounds thrown if the deque is empty
 template <typename T>
 inline T &Deque<T>::front()
 {
@@ -136,6 +166,9 @@ inline T &Deque<T>::front()
     return head->data;
 }
 
+/// @brief references the element at the back of the deque
+/// @return reference to the element at the back of the deque
+/// @exception OutOfBounds thrown if the deque is empty
 template <typename T>
 inline T &Deque<T>::back()
 {
@@ -151,7 +184,7 @@ inline T &Deque<T>::back()
 /// @tparam T datatype
 /// @param i index
 /// @return reference to object at index i
-/// @exception OutOfBounds returned when referencing an invalid index
+/// @exception OutOfBounds thrown when referencing an invalid index
 template <typename T>
 inline T &Deque<T>::operator[](int i)
 {
@@ -194,6 +227,8 @@ inline void Deque<T>::push_back(T data)
     tail = new_node;
 }
 
+/// @brief Pushes a new element to the front of the deque
+/// @param data element to push to the front of the deque
 template <typename T>
 inline void Deque<T>::push_front(T data)
 {
@@ -216,6 +251,9 @@ inline void Deque<T>::push_front(T data)
     head = new_node;
 }
 
+/// @brief Pops out the object at the back of the deque
+/// @return copy of object at the back of the deque
+/// @exception OutOfBounds thrown if the deque is empty
 template <typename T>
 inline T Deque<T>::pop_back()
 {
@@ -253,6 +291,9 @@ inline T Deque<T>::pop_back()
     return returnData;
 }
 
+/// @brief Pops out the object at the front of the deque
+/// @return copy of object at the front of the deque
+/// @exception OutOfBounds thrown if the deque is empty
 template <typename T>
 inline T Deque<T>::pop_front()
 {
@@ -290,6 +331,7 @@ inline T Deque<T>::pop_front()
     return returnData;
 }
 
+/// @brief Clears all elements from the deque
 template <typename T>
 inline void Deque<T>::clear()
 {
@@ -338,7 +380,7 @@ inline T &Deque<T>::operator=(T &&rval)
 
 /// @brief Erases an element
 /// @param i index of element to erase
-/// @exception OutOfBounds returned when referencing an invalid index
+/// @exception OutOfBounds thrown when referencing an invalid index
 template <typename T>
 inline void Deque<T>::erase(int i)
 {

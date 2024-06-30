@@ -1,3 +1,10 @@
+/*
+ *
+ * This file contains the robot type base classes (TramplingRobot, LookingRobot, etc.)
+ * and the specialized robot classes (RoboCop, BlueThunder, RobotTank, etc.)
+ *
+ */
+
 #ifndef ROBOT_H
 #define ROBOT_H
 
@@ -18,6 +25,7 @@ public:
     bool canTrample() const;
 };
 
+/// @brief Tramples the robot at this robot's current position
 inline void TramplingRobot::trample()
 {
     for (int i = 0; i < Robot::robotDeque.size(); i++)
@@ -31,6 +39,8 @@ inline void TramplingRobot::trample()
     }
 }
 
+/// @brief Returns whether this robot can trample
+/// @return true if this robot can trample, false otherwise
 inline bool TramplingRobot::canTrample() const
 {
     return true;
@@ -135,9 +145,10 @@ public:
 /// @brief checks if there are any robots in a coordinate position
 /// @param relativeX relative X position
 /// @param relativeY relative Y position
-/// @return Cell object
+/// @return Cell object containing information about the specified board position
 inline Cell LookingRobot::look(int relativeX, int relativeY)
 {
+    // Convert relative position to absolute position
     int positionX = this->getPositionX() + relativeX;
     int positionY = this->getPositionY() + relativeY;
 
@@ -147,6 +158,7 @@ inline Cell LookingRobot::look(int relativeX, int relativeY)
         return Cell(relativeX, relativeY);
     }
 
+    // Checking if a any robots match the looking position
     for (int i = 0; i < robotDeque.size(); i++)
     {
         if (robotDeque[i]->getPositionX() == positionX && robotDeque[i]->getPositionY() == positionY)
@@ -189,9 +201,11 @@ inline void FiringRobot::fire(int relativeX, int relativeY)
         throw AttemptToShootSelf();
     }
 
+    // convert relative position to absolute position
     int positionX = this->getPositionX() + relativeX;
     int positionY = this->getPositionY() + relativeY;
 
+    // Checking if the position that is being referenced is a position inside the game board
     if (positionX >= Board::getWidth() || positionY >= Board::getHeight() || positionX < 0 || positionY < 0)
     {
         throw PositionOutsideOfBoard();
@@ -210,15 +224,15 @@ inline void FiringRobot::fire(int relativeX, int relativeY)
     }
 }
 
-/// @param fireRange if the fireRange >= 0 : indicates the fire range value
-/// @param fireRange if the fireRange == -1 : indicates an unlimited fire range value
+/// @return >= 0 : indicates the fire range value.
+/// @return == -1 : indicates an unlimited fire range value
 inline int FiringRobot::getFireRange() const
 {
     return this->fireRange;
 }
 
-/// @param fireRange if the fireRange >= 0 : indicates the fire range value
-/// @param fireRange if the fireRange == -1 : indicates an unlimited fire range value
+/// @param fireRange >= 0 : indicates the fire range value
+/// @param fireRange == -1 : indicates an unlimited fire range value
 inline void FiringRobot::setFireRange(int fireRange)
 {
     this->fireRange = fireRange;
@@ -242,7 +256,7 @@ public:
 
 /// @brief Moves the robot object to a specified relative position
 /// @param relativeX relative X position
-/// @param relativeY relative X position
+/// @param relativeY relative Y position
 /// @return true if the robot moves successfully, false if the position is blocked by another robot
 /// @exception RelativePositionIsZero When moving to the same spot the robot is currently at
 /// @exception PositionOutsideOfBoard When moving to a position outside of the board
@@ -253,9 +267,11 @@ inline bool MovingRobot::move(int relativeX, int relativeY)
         throw RelativePositionIsZero();
     }
 
+    // convert relative position to absolute position
     int positionX = this->getPositionX() + relativeX;
     int positionY = this->getPositionY() + relativeY;
 
+    // Checking if the position that is being referenced is a position inside the game board
     if (positionX >= Board::getWidth() || positionY >= Board::getHeight() || positionX < 0 || positionY < 0)
     {
         throw PositionOutsideOfBoard();
@@ -649,6 +665,7 @@ public:
 
 inline void RoboTank::executeTurn()
 {
+    // Shooting a random position on the board
     bool hasShot = false;
     while (!hasShot)
     {
@@ -760,6 +777,7 @@ public:
     void evolve();
 };
 
+/// @brief Sets the the fire position to the next position in a circular fashion
 inline void BlueThunder::setNextFirePosition()
 {
     if (firePositionX != 1 && firePositionY == -1)

@@ -1,3 +1,10 @@
+/*
+ *
+ * This file contains the Log class that handles generating the robot action
+ * log messages that are displayed on the terminal
+ *
+ */
+
 #ifndef LOG_H
 #define LOG_H
 
@@ -8,7 +15,13 @@ using namespace std;
 class Log
 {
 private:
+    /// @brief string that temporarily stores all robot action log messages
+    /// before they are outputted to the terminal
     static string logBuffer;
+
+    /*---------------------------------------------*/
+    /*         Action Log Message Template         */
+    /*---------------------------------------------*/
 
     static const string ENEMY_SPOTTED;
     static const string MOVE;
@@ -36,6 +49,11 @@ public:
 };
 
 string Log::logBuffer = "";
+
+/*---------------------------------------------*/
+/*         Action Log Message Template         */
+/*---------------------------------------------*/
+
 const string Log::ENEMY_SPOTTED = "${robotName} spotted ${enemyRobot} at ${posX}, ${posY}";
 const string Log::MOVE = "${robotName} moved to ${posX}, ${posY}";
 const string Log::TRAMPLE = "${robotName} trampled ${trampledRobot}";
