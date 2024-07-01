@@ -300,6 +300,60 @@ inline int MovingRobot::getMoveRange() const
     return this->moveRange;
 }
 
+class Nemesis : public MovingRobot, public TramplingRobot, public FiringRobot
+{
+public:
+    Nemesis(string name, int posX, int posY) : Robot(name, posX, posY)
+    {
+        setType("Nemesis");
+        setFireRange(-1);
+    };
+
+    void executeTurn();
+    void evolve();
+};
+
+inline void Nemesis::executeTurn()
+{
+    int relativeX = RNG::integer(-getPositionX(), Board::getWidth() - getPositionX() - 1);
+    int relativeY = RNG::integer(-getPositionY(), Board::getHeight() - getPositionY() - 1);
+
+    // Moving to a random cell on the board
+    move(relativeX, relativeY);
+
+    trample(); // tramples any robot that is occupying the same position
+
+    // Fire 3 times at random positions on the board
+    int shotsLeft = 3;
+    while (shotsLeft > 0)
+    {
+        relativeX = RNG::integer(-getPositionX(), Board::getWidth() - getPositionX() - 1);
+        relativeY = RNG::integer(-getPositionY(), Board::getHeight() - getPositionY() - 1);
+
+        try
+        {
+            fire(relativeX, relativeY);
+        }
+        catch (FiringRobot::AttemptToShootSelf)
+        {
+            continue;
+        }
+        catch (Robot::PositionOutsideOfBoard)
+        {
+            continue;
+        }
+
+        shotsLeft--;
+    }
+
+    setNextTurn(getNextTurn() + 1);
+}
+
+/// @brief Nemesis does not evolve into anything so this function will not do anything
+inline void Nemesis::evolve()
+{
+    return;
+}
 
 class UltimateRobot : public LookingRobot, public MovingRobot, public TramplingRobot, public FiringRobot
 {
@@ -374,10 +428,12 @@ inline void UltimateRobot::executeTurn()
     setNextTurn(getNextTurn() + 1);
 }
 
-/// @brief UltimateRobot does not evolve into anything so this function will not do anything
 inline void UltimateRobot::evolve()
 {
-    return;
+    robotDeque.pop_front();
+    robotDeque.push_front(new Nemesis(getName(), getPositionX(), getPositionY()));
+    robotDeque.front()->setNextTurn(getNextTurn());
+    Log::evolve(getName(), "Nemesis");
 }
 
 

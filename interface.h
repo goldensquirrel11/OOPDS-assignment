@@ -138,6 +138,10 @@ inline void Game::readConfigFile(ifstream &configFile)
         {
             Robot::robotDeque.push_back(new UltimateRobot(robotName, posX, posY));
         }
+        else if (robotType == "Nemesis")
+        {
+            Robot::robotDeque.push_back(new Nemesis(robotName, posX, posY));
+        }
         else
         {
             cout << "[ERROR] The robot type " << robotType << " could not be interpreted\n";
